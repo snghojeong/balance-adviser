@@ -1,13 +1,7 @@
-import yfinance as yf
+from pandas_datareader import data
 from matplotlib import pyplot as plt
 
-snp500 = yf.Ticker("VOO")
+df = data.DataReader('005930.KS','yahoo','2019-01-01','2019-12-31')
 
-# get stock info
-snp500.info
-
-# get historical market data
-hist = snp500.history(period="max")
-
-plt.plot(hist)
+plt.plot(df['Close'], label='Close')
 plt.show()
