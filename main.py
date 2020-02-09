@@ -28,7 +28,8 @@ portfolio = [ (half_bal["stock"]["price"] * half_bal["stock"]["amount"]) +
               (half_bal["bond"]["price"] * half_bal["bond"]["amount"]) ]
 
 def rebalance(balance, prices, ratio):
-    print(balance)
+    for k, v in balance.items():
+        print(v["amount"])
     print(prices)
     print(ratio)
 
@@ -56,7 +57,6 @@ for s, b in zip(snp['Close'], treas['Close']):
     cashVal = half_bal["cash"]["amount"]
     portfolio.append(stockVal + bondVal + cashVal)
     onlyStock.append(s * stockBal["stock"]["amount"])
-    rebalance(half_bal, [s, b], [1, 1])
 
 print(snp)
 print(treas)
