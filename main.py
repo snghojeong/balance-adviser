@@ -27,9 +27,20 @@ onlyStock = [ (stockBal["stock"]["price"] * stockBal["stock"]["amount"]) ]
 portfolio = [ (half_bal["stock"]["price"] * half_bal["stock"]["amount"]) + 
               (half_bal["bond"]["price"] * half_bal["bond"]["amount"]) ]
 
+def getValueEachAsset(balance):
+    valueList = []
+    for k, v in balance.items():
+        valueList.append(v['price'] * v['amount'])
+    return valueList
+
+def getValue(balance):
+    return sum(getValueEachAsset(balance))
+
 def rebalance(balance, prices, ratio):
     for k, v in balance.items():
+        print(v["price"])
         print(v["amount"])
+        print(v["price"] * v["amount"])
     print(prices)
     print(ratio)
 
