@@ -12,9 +12,9 @@ stockBal["stock"]["price"] = snp['Close'][0]
 stockBal["stock"]["amount"] = 20000
 
 half_bal = { 
-        "stock": { "price": 0, "amount": 0 }, 
-        "bond": { "price": 0, "amount": 0 },
-        "cash": { "price": 1, "amount": 0 }
+        "stock": { "price": 0, "amount": 0, "ratio": 1 }, 
+        "bond": { "price": 0, "amount": 0, "ratio": 1 },
+        "cash": { "price": 1, "amount": 0, "ratio": 1 }
         }
 
 half_bal["stock"]["price"] = snp['Close'][0]
@@ -36,13 +36,12 @@ def getValueEachAsset(balance):
 def getValue(balance):
     return sum(getValueEachAsset(balance))
 
-def rebalance(balance, prices, ratio):
+def rebalance(balance, prices):
     for k, v in balance.items():
         print(v["price"])
         print(v["amount"])
         print(v["price"] * v["amount"])
     print(prices)
-    print(ratio)
 
 for s, b in zip(snp['Close'], treas['Close']):
     stockVal = s * half_bal["stock"]["amount"]
