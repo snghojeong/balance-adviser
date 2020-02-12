@@ -1,4 +1,5 @@
 import math
+import numpy as np
 from pandas_datareader import data
 from matplotlib import pyplot as plt
 
@@ -27,6 +28,9 @@ onlyStock = [ (stockBal["stock"]["price"] * stockBal["stock"]["amount"]) ]
 portfolio = [ (half_bal["stock"]["price"] * half_bal["stock"]["amount"]) + 
               (half_bal["bond"]["price"] * half_bal["bond"]["amount"]) ]
 
+def amounts(balance):
+    return [ v['amount'] for k, v in balance.items() ]
+
 def getValueEachAsset(balance):
     valueList = []
     for k, v in balance.items():
@@ -37,6 +41,8 @@ def getValue(balance):
     return sum(getValueEachAsset(balance))
 
 def rebalance(balance, prices):
+    tmp = np.multiply(amounts(balance), prices)
+    print(tmp)
     for k, v in balance.items():
         print(v["price"])
         print(v["amount"])
