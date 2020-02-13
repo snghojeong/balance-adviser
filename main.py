@@ -41,13 +41,14 @@ def getValue(balance):
     return sum(getValueEachAsset(balance))
 
 def rebalance(balance, prices):
-    tmp = np.multiply(amounts(balance), prices)
-    print(tmp)
+    assets = np.multiply(amounts(balance), prices)
+    ratios = [v['ratio'] for k, v in balance.items()]
+    normAssets = assets / np.abs(assets).max(axis=0) # Normalized
+    normRatios = ratios / np.abs(ratios).max(axis=0) # Normalized
     for k, v in balance.items():
         print(v["price"])
         print(v["amount"])
         print(v["price"] * v["amount"])
-    print(prices)
 
 for s, b in zip(snp['Close'], treas['Close']):
     stockVal = s * half_bal["stock"]["amount"]
