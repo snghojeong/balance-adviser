@@ -16,6 +16,7 @@ def getValue(balance):
 def rebalance(balance, prices):
     assets = np.multiply(amounts(balance), prices)
     ratios = [v['ratio'] for k, v in balance.items()]
-    normAssets = assets / np.abs(assets).max(axis=0) # Normalized
-    normRatios = ratios / np.abs(ratios).max(axis=0) # Normalized
+    normAssets = assets / np.abs(assets).sum()
+    normRatios = ratios / np.abs(ratios).sum()
     subtracted = np.subtract(normAssets, normRatios)
+    print(subtracted)
