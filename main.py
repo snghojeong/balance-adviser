@@ -1,5 +1,3 @@
-import math
-import numpy as np
 from pandas_datareader import data
 from matplotlib import pyplot as plt
 
@@ -27,28 +25,6 @@ onlyStock = [ (stockBal["stock"]["price"] * stockBal["stock"]["amount"]) ]
 
 portfolio = [ (half_bal["stock"]["price"] * half_bal["stock"]["amount"]) + 
               (half_bal["bond"]["price"] * half_bal["bond"]["amount"]) ]
-
-def amounts(balance):
-    return [ v['amount'] for k, v in balance.items() ]
-
-def getValueEachAsset(balance):
-    valueList = []
-    for k, v in balance.items():
-        valueList.append(v['price'] * v['amount'])
-    return valueList
-
-def getValue(balance):
-    return sum(getValueEachAsset(balance))
-
-def rebalance(balance, prices):
-    assets = np.multiply(amounts(balance), prices)
-    ratios = [v['ratio'] for k, v in balance.items()]
-    normAssets = assets / np.abs(assets).max(axis=0) # Normalized
-    normRatios = ratios / np.abs(ratios).max(axis=0) # Normalized
-    for k, v in balance.items():
-        print(v["price"])
-        print(v["amount"])
-        print(v["price"] * v["amount"])
 
 for s, b in zip(snp['Close'], treas['Close']):
     stockVal = s * half_bal["stock"]["amount"]
