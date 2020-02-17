@@ -18,5 +18,5 @@ def rebalance(balance, prices):
     ratios = [v['ratio'] for k, v in balance.items()]
     normAssets = assets / np.abs(assets).sum()
     normRatios = ratios / np.abs(ratios).sum()
-    subtracted = np.subtract(normAssets, normRatios)
-    print(subtracted)
+    sellAssets = list(map(lambda a, r: (a - r)/a, normAssets, normRatios))
+    buyAssets  = list(map(lambda a, r: (r - a)/a, normAssets, normRatios))
