@@ -22,3 +22,7 @@ def rebalance(balance, prices):
     buyRatios  = list(map(lambda a, r: (r - a)/a if r > a else 0, normAssets, normRatios))
     sellAmounts = list(map(lambda a, r: math.floor(a * r), amounts(balance), sellRatios))
     buyAmounts  = list(map(lambda a, r: math.floor(a * r), amounts(balance), buyRatios))
+    i = 0
+    for k, v in balance.items():
+        i = i + 1
+        v['amount'] -= sellAmounts[i]
