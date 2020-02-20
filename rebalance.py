@@ -26,3 +26,7 @@ def rebalance(balance, prices):
     for k, v in balance.items():
         i = i + 1
         v['amount'] -= sellAmounts[i]
+    i = 0
+    for k, v in balance.items():
+        i = i + 1
+        v['amount'] += buyAmounts[i]
