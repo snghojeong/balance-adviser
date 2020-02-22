@@ -20,13 +20,19 @@ def rebalance(balance, prices):
     normRatios = ratios / np.abs(ratios).sum()
     sellRatios = list(map(lambda a, r: (a - r)/a if a > r else 0, normAssets, normRatios))
     buyRatios  = list(map(lambda a, r: (r - a)/a if r > a else 0, normAssets, normRatios))
-    sellAmounts = list(map(lambda a, r: math.floor(a * r), amounts(balance), sellRatios))
-    buyAmounts  = list(map(lambda a, r: math.floor(a * r), amounts(balance), buyRatios))
-    i = 0
+    keys = [ k for k, v in balance.items()]
+    sellAmounts = dict(zip(keys, 
+        list(map(lambda a, r: math.floor(a * r), amounts(balance), sellRatios))
+        ))
+    buyAmounts  = dict(zip(keys, 
+        list(map(lambda a, r: math.floor(a * r), amounts(balance), buyRatios))
+        ))
+    change = 0
     for k, v in balance.items():
-        i = i + 1
-        v['amount'] -= sellAmounts[i]
-    i = 0
+        v['amount'] -= sellAmounts[k]
+        change += (v['price'] * sellAmounts[k])
     for k, v in balance.items():
-        i = i + 1
-        v['amount'] += buyAmounts[i]
+        v['amount'] += buyAmounts[k]
+        change -= (v['price'] * buyAmounts[k])
+    if change > 0:
+        balance['cash']['amount'] += change
