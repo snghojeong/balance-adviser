@@ -28,11 +28,12 @@ def rebalance(balance, prices):
         list(map(lambda a, r: math.floor(a * r), amounts(balance), buyRatios))
         ))
     change = 0
-    for k, v in balance.items():
+    balanceExceptCash = dict(filter(lambda elem: elem[0] != 'cash', balance.items()))
+    for k, v in balanceExceptCash.items():
         v['amount'] -= sellAmounts[k]
         change += (v['price'] * sellAmounts[k])
-    for k, v in balance.items():
+    for k, v in balanceExceptCash.items():
         v['amount'] += buyAmounts[k]
-        change -= (v['price'] * buyAmounts[k])
+        change -= v['price'] * buyAmounts[k]
     if change > 0:
         balance['cash']['amount'] += change
