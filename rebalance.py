@@ -33,7 +33,9 @@ def rebalance(balance, prices):
         v['amount'] -= sellAmounts[k]
         change += (v['price'] * sellAmounts[k])
     for k, v in balanceExceptCash.items():
-        v['amount'] += buyAmounts[k]
-        change -= v['price'] * buyAmounts[k]
+        ableAmount = math.floor(change / v['price'])
+        amount = buyAmounts[k] if buyAmounts[k] <= ableAmount else ableAmount
+        v['amount'] += amount
+        change -= v['price'] * amount
     if change > 0:
         balance['cash']['amount'] += change
