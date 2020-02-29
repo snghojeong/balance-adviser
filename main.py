@@ -27,6 +27,10 @@ onlyStock = [ (stockBal["stock"]["price"] * stockBal["stock"]["amount"]) ]
 portfolio = [ (half_bal["stock"]["price"] * half_bal["stock"]["amount"]) + 
               (half_bal["bond"]["price"] * half_bal["bond"]["amount"]) ]
 
+stock = [half_bal["stock"]["amount"]]
+bond = [half_bal["bond"]["amount"]]
+cash = [half_bal["cash"]["amount"]]
+
 for s, b in zip(snp['Close'], treas['Close']):
     rebalance(half_bal, [s, b, 1])
     stockVal = s * half_bal["stock"]["amount"]
@@ -34,15 +38,24 @@ for s, b in zip(snp['Close'], treas['Close']):
     cashVal = half_bal["cash"]["amount"]
     portfolio.append(stockVal + bondVal + cashVal)
     onlyStock.append(s * stockBal["stock"]["amount"])
+    stock.append(half_bal["stock"]["amount"])
+    bond.append(half_bal["bond"]["amount"])
+    cash.append(half_bal["cash"]["amount"])
 
 print(snp)
 print(treas)
 
-plt.subplot(3,1,1)
+plt.subplot(3,2,1)
 plt.plot(snp['Close'], label='S&P500')
-plt.subplot(3,1,2)
+plt.subplot(3,2,3)
 plt.plot(treas['Close'], label='Treasury Bond')
-plt.subplot(3,1,3)
+plt.subplot(3,2,5)
 plt.plot(portfolio, label='Portfolio')
 plt.plot(onlyStock, label='Only Stock')
+plt.subplot(3,2,2)
+plt.plot(stock, label='Portfolio-Stock')
+plt.subplot(3,2,4)
+plt.plot(bond, label='Portfolio-Bond')
+plt.subplot(3,2,6)
+plt.plot(cash, label='Portfolio-Cash')
 plt.show()
