@@ -2,8 +2,8 @@ from pandas_datareader import data
 from matplotlib import pyplot as plt
 from rebalance import *
 
-snp = data.DataReader('^GSPC', 'yahoo', start='1992-01-02')
-treas = data.DataReader('VFITX', 'yahoo', start='1992-01-02')
+snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
+treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
 
 stockBal = {
         "stock": { "price": 0, "amount": 0 }
@@ -20,7 +20,7 @@ half_bal = {
 half_bal["stock"]["price"] = snp['Close'][0]
 half_bal["stock"]["amount"] = 10000
 half_bal["bond"]["price"] = treas['Close'][0]
-half_bal["bond"]["amount"] = 410000
+half_bal["bond"]["amount"] = 100000
 
 onlyStock = [ (stockBal["stock"]["price"] * stockBal["stock"]["amount"]) ]
 
