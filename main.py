@@ -20,7 +20,7 @@ half_bal = {
 half_bal["stock"]["price"] = snp['Close'][0]
 half_bal["stock"]["amount"] = 10000
 half_bal["bond"]["price"] = treas['Close'][0]
-half_bal["bond"]["amount"] = 100000
+half_bal["bond"]["amount"] = math.floor(half_bal["stock"]["price"] * half_bal["stock"]["amount"] / half_bal["bond"]["price"])
 
 onlyStock = [ (stockBal["stock"]["price"] * stockBal["stock"]["amount"]) ]
 
