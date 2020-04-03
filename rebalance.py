@@ -13,7 +13,8 @@ def getValueEachAsset(balance):
 def getValue(balance):
     return sum(getValueEachAsset(balance))
 
-def rebalance(balance, prices):
+def rebalance(balance):
+    prices = [v['price'] for k, v in balance.items()]
     assets = np.multiply(amounts(balance), prices)
     ratios = [v['ratio'] for k, v in balance.items()]
     normAssets = assets / np.abs(assets).sum()
@@ -38,4 +39,6 @@ def rebalance(balance, prices):
         amount = buyAmounts[k] if buyAmounts[k] <= ableAmount else ableAmount
         v['amount'] += amount
         change -= v['price'] * amount
+    if change > 2000:
+        print(change)
     balance['cash']['amount'] = change

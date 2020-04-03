@@ -32,7 +32,9 @@ bond = [half_bal["bond"]["amount"]]
 cash = [half_bal["cash"]["amount"]]
 
 for s, b in zip(snp['Close'], treas['Close']):
-    rebalance(half_bal, [s, b, 1])
+    half_bal['stock']['price'] = s
+    half_bal['bond']['price'] = b
+    rebalance(half_bal)
     stockVal = s * half_bal["stock"]["amount"]
     bondVal = b * half_bal["bond"]["amount"]
     cashVal = half_bal["cash"]["amount"]
