@@ -39,6 +39,4 @@ def rebalance(balance):
         amount = buyAmounts[k] if buyAmounts[k] <= ableAmount else ableAmount
         v['amount'] += amount
         change -= v['price'] * amount
-    if change > 2000:
-        print(change)
     balance['cash']['amount'] = change

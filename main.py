@@ -5,44 +5,48 @@ from rebalance import *
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
 treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
 
-stockBal = {
+initialCash = 1000000
+
+balanceOnlyStock = {
         "stock": { "price": 0, "amount": 0 }
         }
-stockBal["stock"]["price"] = snp['Close'][0]
-stockBal["stock"]["amount"] = 20000
+balanceOnlyStock["stock"]["price"] = snp['Close'][0]
+balanceOnlyStock["stock"]["amount"] = math.floor(initialCash / balanceOnlyStock["stock"]["price"])
 
-half_bal = { 
+balanceStockAndBond = { 
         "stock": { "price": 0, "amount": 0, "ratio": 1 }, 
         "bond": { "price": 0, "amount": 0, "ratio": 1 },
         "cash": { "price": 1, "amount": 0, "ratio": 0 }
         }
 
-half_bal["stock"]["price"] = snp['Close'][0]
-half_bal["stock"]["amount"] = 10000
-half_bal["bond"]["price"] = treas['Close'][0]
-half_bal["bond"]["amount"] = math.floor(half_bal["stock"]["price"] * half_bal["stock"]["amount"] / half_bal["bond"]["price"])
+ratios = [v['ratio'] for k, v in balanceStockAndBond.items()]
+normRatios = ratios / np.abs(ratios).sum()
+balanceStockAndBond["stock"]["price"] = snp['Close'][0]
+balanceStockAndBond["stock"]["amount"] = math.floor((normRatios[0] * initialCash) / balanceStockAndBond["stock"]["price"])
+balanceStockAndBond["bond"]["price"] = treas['Close'][0]
+balanceStockAndBond["bond"]["amount"] = math.floor((normRatios[1] * initialCash) / balanceStockAndBond["bond"]["price"])
 
-onlyStock = [ (stockBal["stock"]["price"] * stockBal["stock"]["amount"]) ]
+onlyStock = [ (balanceOnlyStock["stock"]["price"] * balanceOnlyStock["stock"]["amount"]) ]
 
-portfolio = [ (half_bal["stock"]["price"] * half_bal["stock"]["amount"]) + 
-              (half_bal["bond"]["price"] * half_bal["bond"]["amount"]) ]
+portfolio = [ (balanceStockAndBond["stock"]["price"] * balanceStockAndBond["stock"]["amount"]) + 
+              (balanceStockAndBond["bond"]["price"] * balanceStockAndBond["bond"]["amount"]) ]
 
-stock = [half_bal["stock"]["amount"]]
-bond = [half_bal["bond"]["amount"]]
-cash = [half_bal["cash"]["amount"]]
+stock = [balanceStockAndBond["stock"]["amount"]]
+bond = [balanceStockAndBond["bond"]["amount"]]
+cash = [balanceStockAndBond["cash"]["amount"]]
 
 for s, b in zip(snp['Close'], treas['Close']):
-    half_bal['stock']['price'] = s
-    half_bal['bond']['price'] = b
-    rebalance(half_bal)
-    stockVal = s * half_bal["stock"]["amount"]
-    bondVal = b * half_bal["bond"]["amount"]
-    cashVal = half_bal["cash"]["amount"]
+    balanceStockAndBond['stock']['price'] = s
+    balanceStockAndBond['bond']['price'] = b
+    rebalance(balanceStockAndBond)
+    stockVal = s * balanceStockAndBond["stock"]["amount"]
+    bondVal = b * balanceStockAndBond["bond"]["amount"]
+    cashVal = balanceStockAndBond["cash"]["amount"]
     portfolio.append(stockVal + bondVal + cashVal)
-    onlyStock.append(s * stockBal["stock"]["amount"])
-    stock.append(half_bal["stock"]["amount"])
-    bond.append(half_bal["bond"]["amount"])
-    cash.append(half_bal["cash"]["amount"])
+    onlyStock.append(s * balanceOnlyStock["stock"]["amount"])
+    stock.append(balanceStockAndBond["stock"]["amount"])
+    bond.append(balanceStockAndBond["bond"]["amount"])
+    cash.append(balanceStockAndBond["cash"]["amount"])
 
 print(snp)
 print(treas)
