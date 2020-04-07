@@ -14,8 +14,8 @@ balanceOnlyStock["stock"]["price"] = snp['Close'][0]
 balanceOnlyStock["stock"]["amount"] = math.floor(initialCash / balanceOnlyStock["stock"]["price"])
 
 balanceStockAndBond = { 
-        "stock": { "price": 0, "amount": 0, "ratio": 1 }, 
-        "bond": { "price": 0, "amount": 0, "ratio": 1 },
+        "stock": { "price": 0, "amount": 0, "ratio": 7 }, 
+        "bond": { "price": 0, "amount": 0, "ratio": 3 },
         "cash": { "price": 1, "amount": 0, "ratio": 0 }
         }
 
