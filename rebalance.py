@@ -4,6 +4,9 @@ import numpy as np
 def amounts(balance):
     return [ v['amount'] for k, v in balance.items() ]
 
+def prices(balance):
+    return [ v['price'] for k, v in balance.items() ]
+
 def getValueEachAsset(balance):
     valueList = []
     for k, v in balance.items():
@@ -14,8 +17,7 @@ def getValue(balance):
     return sum(getValueEachAsset(balance))
 
 def rebalance(balance):
-    prices = [v['price'] for k, v in balance.items()]
-    assets = np.multiply(amounts(balance), prices)
+    assets = np.multiply(amounts(balance), prices(balance))
     ratios = [v['ratio'] for k, v in balance.items()]
     normAssets = assets / np.abs(assets).sum()
     normRatios = ratios / np.abs(ratios).sum()
