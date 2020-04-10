@@ -7,15 +7,6 @@ def amounts(balance):
 def prices(balance):
     return [ v['price'] for k, v in balance.items() ]
 
-def getValueEachAsset(balance):
-    valueList = []
-    for k, v in balance.items():
-        valueList.append(v['price'] * v['amount'])
-    return valueList
-
-def getValue(balance):
-    return sum(getValueEachAsset(balance))
-
 def rebalance(balance):
     assets = np.multiply(amounts(balance), prices(balance))
     ratios = [v['ratio'] for k, v in balance.items()]
