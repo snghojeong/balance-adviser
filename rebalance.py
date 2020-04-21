@@ -35,3 +35,4 @@ def rebalance(balance):
         v['amount'] += amount
         change -= v['price'] * amount
     balance['cash']['amount'] = change
+    return balance

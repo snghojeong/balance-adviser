@@ -39,7 +39,7 @@ for s, b in zip(snp['Close'], treas['Close']):
     for i in range(0, 9):
         balanceStockAndBond[i]['stock']['price'] = s
         balanceStockAndBond[i]['bond']['price'] = b
-        rebalance(balanceStockAndBond[i])
+        balanceStockAndBond[i] = rebalance(balanceStockAndBond[i])
         stockVal = s * balanceStockAndBond[i]["stock"]["amount"]
         bondVal = b * balanceStockAndBond[i]["bond"]["amount"]
         cashVal = balanceStockAndBond[i]["cash"]["amount"]
