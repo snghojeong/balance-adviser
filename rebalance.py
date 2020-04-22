@@ -7,6 +7,15 @@ def assetsDict(balance):
         ret[k] = v['amount'] * v['price']
     return ret
 
+def normalize(balance):
+    total = 0
+    for k, v in balance.items():
+        total += v 
+    ret = dict()
+    for k, v in balance.items():
+        ret[k] = float(v) / float(total)
+    return ret
+
 def amounts(balance):
     return [ v['amount'] for k, v in balance.items() ]
 
