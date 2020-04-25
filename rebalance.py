@@ -2,10 +2,9 @@ import math
 import numpy as np
 
 def assetsDict(balance):
-    ret = dict()
     for k, v in balance.items():
-        ret[k] = v['amount'] * v['price']
-    return ret
+        v['value'] = v['amount'] * v['price']
+    return balance
 
 def normalize(balance):
     total = 0
