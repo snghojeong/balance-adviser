@@ -22,7 +22,7 @@ def prices(balance):
     return [ v['price'] for k, v in balance.items() ]
 
 def ratios(balance):
-    return [ v['ratio'] for k, v in balance.items() ]
+    return [ float(v['ratio']) for k, v in balance.items() ]
 
 def rebalance(balance):
     assets = np.multiply(amounts(balance), prices(balance))
