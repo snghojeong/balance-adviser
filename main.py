@@ -27,13 +27,15 @@ for i in range(0, 9):
     balanceStockAndBond[i]["bond"]["price"] = treas['Close'][0]
     balanceStockAndBond[i]["bond"]["amount"] = math.floor((normRatios[0] * initialCash) / balanceStockAndBond[i]["bond"]["price"])
 
-onlyStock = [ (balanceOnlyStock["stock"]["price"] * balanceOnlyStock["stock"]["amount"]) ]
-portfolio = [ (balanceStockAndBond[5]["stock"]["price"] * balanceStockAndBond[5]["stock"]["amount"]) + 
-              (balanceStockAndBond[5]["bond"]["price"] * balanceStockAndBond[5]["bond"]["amount"]) ]
+trackingIdx = 8
 
-stock = [balanceStockAndBond[5]["stock"]["amount"]]
-bond = [balanceStockAndBond[5]["bond"]["amount"]]
-cash = [balanceStockAndBond[5]["cash"]["amount"]]
+onlyStock = [ (balanceOnlyStock["stock"]["price"] * balanceOnlyStock["stock"]["amount"]) ]
+portfolio = [ (balanceStockAndBond[trackingIdx]["stock"]["price"] * balanceStockAndBond[trackingIdx]["stock"]["amount"]) + 
+              (balanceStockAndBond[trackingIdx]["bond"]["price"] * balanceStockAndBond[trackingIdx]["bond"]["amount"]) ]
+
+stock = [balanceStockAndBond[trackingIdx]["stock"]["amount"]]
+bond = [balanceStockAndBond[trackingIdx]["bond"]["amount"]]
+cash = [balanceStockAndBond[trackingIdx]["cash"]["amount"]]
 
 for s, b in zip(snp['Close'], treas['Close']):
     for i in range(0, 9):
@@ -43,12 +45,12 @@ for s, b in zip(snp['Close'], treas['Close']):
         stockVal = s * balanceStockAndBond[i]["stock"]["amount"]
         bondVal = b * balanceStockAndBond[i]["bond"]["amount"]
         cashVal = balanceStockAndBond[i]["cash"]["amount"]
-        if i == 5:
+        if i == trackingIdx:
             portfolio.append(stockVal + bondVal + cashVal)
     onlyStock.append(s * balanceOnlyStock["stock"]["amount"])
-    stock.append(balanceStockAndBond[5]["stock"]["amount"])
-    bond.append(balanceStockAndBond[5]["bond"]["amount"])
-    cash.append(balanceStockAndBond[5]["cash"]["amount"])
+    stock.append(balanceStockAndBond[trackingIdx]["stock"]["amount"])
+    bond.append(balanceStockAndBond[trackingIdx]["bond"]["amount"])
+    cash.append(balanceStockAndBond[trackingIdx]["cash"]["amount"])
 
 print(snp)
 print(treas)
