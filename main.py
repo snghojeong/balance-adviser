@@ -30,12 +30,16 @@ for i in range(0, 9):
 trackingIdx = 8
 
 onlyStock = [ (balanceOnlyStock["stock"]["price"] * balanceOnlyStock["stock"]["amount"]) ]
-portfolio = [ (balanceStockAndBond[trackingIdx]["stock"]["price"] * balanceStockAndBond[trackingIdx]["stock"]["amount"]) + 
-              (balanceStockAndBond[trackingIdx]["bond"]["price"] * balanceStockAndBond[trackingIdx]["bond"]["amount"]) ]
-
-stock = [balanceStockAndBond[trackingIdx]["stock"]["amount"]]
-bond = [balanceStockAndBond[trackingIdx]["bond"]["amount"]]
-cash = [balanceStockAndBond[trackingIdx]["cash"]["amount"]]
+portfolio = []
+stock = []
+bond = []
+cash = []
+for i in range(0, 9):
+    portfolio.append([ (balanceStockAndBond[i]["stock"]["price"] * balanceStockAndBond[i]["stock"]["amount"]) + 
+            (balanceStockAndBond[i]["bond"]["price"] * balanceStockAndBond[i]["bond"]["amount"]) ])
+    stock.append([balanceStockAndBond[i]["stock"]["amount"]])
+    bond.append([balanceStockAndBond[i]["bond"]["amount"]])
+    cash.append([balanceStockAndBond[i]["cash"]["amount"]])
 
 for s, b in zip(snp['Close'], treas['Close']):
     for i in range(0, 9):
@@ -45,12 +49,11 @@ for s, b in zip(snp['Close'], treas['Close']):
         stockVal = s * balanceStockAndBond[i]["stock"]["amount"]
         bondVal = b * balanceStockAndBond[i]["bond"]["amount"]
         cashVal = balanceStockAndBond[i]["cash"]["amount"]
-        if i == trackingIdx:
-            portfolio.append(stockVal + bondVal + cashVal)
+        portfolio[i].append(stockVal + bondVal + cashVal)
+        stock[i].append(balanceStockAndBond[i]["stock"]["amount"])
+        bond[i].append(balanceStockAndBond[i]["bond"]["amount"])
+        cash[i].append(balanceStockAndBond[i]["cash"]["amount"])
     onlyStock.append(s * balanceOnlyStock["stock"]["amount"])
-    stock.append(balanceStockAndBond[trackingIdx]["stock"]["amount"])
-    bond.append(balanceStockAndBond[trackingIdx]["bond"]["amount"])
-    cash.append(balanceStockAndBond[trackingIdx]["cash"]["amount"])
 
 print(snp)
 print(treas)
@@ -60,7 +63,7 @@ plt.plot(snp['Close'], label='S&P500')
 plt.subplot(3,1,2)
 plt.plot(treas['Close'], label='Treasury Bond')
 plt.subplot(3,1,3)
-plt.plot(portfolio, label='Portfolio')
+plt.plot(portfolio[5], label='Portfolio')
 plt.plot(onlyStock, label='Only Stock')
 plt.legend()
 plt.show()
