@@ -27,8 +27,6 @@ for i in range(0, 9):
     balanceStockAndBond[i]["bond"]["price"] = treas['Close'][0]
     balanceStockAndBond[i]["bond"]["amount"] = math.floor((normRatios[0] * initialCash) / balanceStockAndBond[i]["bond"]["price"])
 
-trackingIdx = 8
-
 onlyStock = [ (balanceOnlyStock["stock"]["price"] * balanceOnlyStock["stock"]["amount"]) ]
 portfolio = []
 stock = []
@@ -58,11 +56,7 @@ for s, b in zip(snp['Close'], treas['Close']):
 print(snp)
 print(treas)
 
-plt.subplot(3,1,1)
-plt.plot(snp['Close'], label='S&P500')
-plt.subplot(3,1,2)
-plt.plot(treas['Close'], label='Treasury Bond')
-plt.subplot(3,1,3)
+plt.subplot(1,1,1)
 plt.plot(portfolio[5], label='Portfolio')
 plt.plot(onlyStock, label='Only Stock')
 plt.legend(loc='upper left')
