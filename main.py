@@ -52,12 +52,15 @@ for s, b in zip(snp['Close'], treas['Close']):
         bond[i].append(balanceStockAndBond[i]["bond"]["amount"])
         cash[i].append(balanceStockAndBond[i]["cash"]["amount"])
     onlyStock.append(s * balanceOnlyStock["stock"]["amount"])
+stockEMA = snp['Close'].ewm(200).mean()
 
 print(snp)
 print(treas)
 
 plt.subplot(1,1,1)
-plt.plot(portfolio[5], label='Portfolio')
-plt.plot(onlyStock, label='Only Stock')
+#plt.plot(portfolio[5], label='Portfolio')
+#plt.plot(onlyStock, label='Only Stock')
+plt.plot(snp['Close'], label='Stock')
+plt.plot(stockEMA, label='EMA')
 plt.legend(loc='upper left')
 plt.show()
