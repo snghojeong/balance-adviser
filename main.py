@@ -1,6 +1,7 @@
 from pandas_datareader import data
 from matplotlib import pyplot as plt
 from rebalance import *
+from envelope import *
 
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
 treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
@@ -55,8 +56,8 @@ for s, b, ema in zip(snp['Close'], treas['Close'], stockEMA):
         bond[i].append(balanceStockAndBond[i]["bond"]["amount"])
         cash[i].append(balanceStockAndBond[i]["cash"]["amount"])
     onlyStock.append(s * balanceOnlyStock["stock"]["amount"])
-    upperBound.append(ema * 1.1)
-    lowerBound.append(ema * 0.9)
+    upperBound.append(envelopeHiBound(ema))
+    lowerBound.append(envelopeLoBound(ema))
 
 print(snp)
 print(treas)
