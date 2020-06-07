@@ -42,7 +42,7 @@ for i in range(0, 9):
 
 upperBound = []
 lowerBound = []
-stockEMA = snp['Close'].ewm(100).mean()
+stockEMA = snp['Close'].ewm(50).mean()
 for s, b, ema in zip(snp['Close'], treas['Close'], stockEMA):
     for i in range(0, 9):
         balanceStockAndBond[i]['stock']['price'] = s
