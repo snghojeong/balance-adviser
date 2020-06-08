@@ -62,9 +62,10 @@ for s, b, ema in zip(snp['Close'], treas['Close'], stockEMA):
 print(snp)
 print(treas)
 
-plt.subplot(1,1,1)
+plt.subplot(2,1,1)
 plt.plot(portfolio[5], label='Portfolio')
 plt.plot(onlyStock, label='Only Stock')
+plt.subplot(2,1,2)
 plt.plot(snp['Close'], label='Stock')
 plt.plot(stockEMA, label='EMA')
 plt.plot(upperBound, label='upper')
