@@ -1,7 +1,5 @@
-envelopeRatio = 0.1
+def envelopeHiBounds(valueList, wnd, ratio):
+    return valueList.ewm(50).mean() * (1 + ratio)
 
-def envelopeHiBound(value):
-    return value * (1.0 + envelopeRatio)
-
-def envelopeLoBound(value):
-    return value * (1.0 - envelopeRatio)
+def envelopeLoBounds(valueList, wnd, ratio):
+    return valueList.ewm(50).mean() * (1 - ratio)

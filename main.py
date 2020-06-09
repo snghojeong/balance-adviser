@@ -40,10 +40,7 @@ for i in range(0, 9):
     bond.append([balanceStockAndBond[i]["bond"]["amount"]])
     cash.append([balanceStockAndBond[i]["cash"]["amount"]])
 
-upperBound = []
-lowerBound = []
-stockEMA = snp['Close'].ewm(50).mean()
-for s, b, ema in zip(snp['Close'], treas['Close'], stockEMA):
+for s, b in zip(snp['Close'], treas['Close']):
     for i in range(0, 9):
         balanceStockAndBond[i]['stock']['price'] = s
         balanceStockAndBond[i]['bond']['price'] = b
@@ -56,8 +53,6 @@ for s, b, ema in zip(snp['Close'], treas['Close'], stockEMA):
         bond[i].append(balanceStockAndBond[i]["bond"]["amount"])
         cash[i].append(balanceStockAndBond[i]["cash"]["amount"])
     onlyStock.append(s * balanceOnlyStock["stock"]["amount"])
-    upperBound.append(envelopeHiBound(ema))
-    lowerBound.append(envelopeLoBound(ema))
 
 print(snp)
 print(treas)
@@ -67,8 +62,8 @@ plt.plot(portfolio[5], label='Portfolio')
 plt.plot(onlyStock, label='Only Stock')
 plt.subplot(2,1,2)
 plt.plot(snp['Close'], label='Stock')
-plt.plot(stockEMA, label='EMA')
-plt.plot(upperBound, label='upper')
-plt.plot(lowerBound, label='lower')
+plt.plot(snp['Close'].ewm(50).mean(), label='EMA')
+plt.plot(envelopeHiBounds(snp['Close'], 50, 0.1), label='upper')
+plt.plot(envelopeLoBounds(snp['Close'], 50, 0.1), label='lower')
 plt.legend(loc='upper left')
 plt.show()
