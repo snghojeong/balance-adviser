@@ -27,18 +27,29 @@ for i in range(0, 9):
     balanceStockAndBond[i]["stock"]["amount"] = math.floor((normRatios[2] * initialCash) / balanceStockAndBond[i]["stock"]["price"])
     balanceStockAndBond[i]["bond"]["price"] = treas['Close'][0]
     balanceStockAndBond[i]["bond"]["amount"] = math.floor((normRatios[0] * initialCash) / balanceStockAndBond[i]["bond"]["price"])
+dynamicBalance = { "bond": { "price": 0, "amount": 0, "ratio": 2 },
+        "cash": { "price": 1, "amount": 0, "ratio": 0 }, 
+        "stock": { "price": 0, "amount": 0, "ratio": 8 }
+        }
+dynamicBalance["stock"]["price"] = snp['Close'][0]
+dynamicBalance["stock"]["amount"] = math.floor((normRatios[2] * initialCash) / dynamicBalance["stock"]["price"])
+dynamicBalance["bond"]["price"] = treas['Close'][0]
+dynamicBalance["bond"]["amount"] = math.floor((normRatios[0] * initialCash) / dynamicBalance["bond"]["price"])
 
 onlyStock = [ (balanceOnlyStock["stock"]["price"] * balanceOnlyStock["stock"]["amount"]) ]
-portfolio = []
+staticPortfolio = []
+dynamicPortfolio = []
 stock = []
 bond = []
 cash = []
 for i in range(0, 9):
-    portfolio.append([ (balanceStockAndBond[i]["stock"]["price"] * balanceStockAndBond[i]["stock"]["amount"]) + 
+    staticPortfolio.append([ (balanceStockAndBond[i]["stock"]["price"] * balanceStockAndBond[i]["stock"]["amount"]) + 
             (balanceStockAndBond[i]["bond"]["price"] * balanceStockAndBond[i]["bond"]["amount"]) ])
     stock.append([balanceStockAndBond[i]["stock"]["amount"]])
     bond.append([balanceStockAndBond[i]["bond"]["amount"]])
     cash.append([balanceStockAndBond[i]["cash"]["amount"]])
+dynamicPortfolio.append((balanceStockAndBond[i]["stock"]["price"] * balanceStockAndBond[i]["stock"]["amount"]) + 
+            (balanceStockAndBond[i]["bond"]["price"] * balanceStockAndBond[i]["bond"]["amount"]))
 
 for s, b in zip(snp['Close'], treas['Close']):
     for i in range(0, 9):
@@ -48,17 +59,25 @@ for s, b in zip(snp['Close'], treas['Close']):
         stockVal = s * balanceStockAndBond[i]["stock"]["amount"]
         bondVal = b * balanceStockAndBond[i]["bond"]["amount"]
         cashVal = balanceStockAndBond[i]["cash"]["amount"]
-        portfolio[i].append(stockVal + bondVal + cashVal)
+        staticPortfolio[i].append(stockVal + bondVal + cashVal)
         stock[i].append(balanceStockAndBond[i]["stock"]["amount"])
         bond[i].append(balanceStockAndBond[i]["bond"]["amount"])
         cash[i].append(balanceStockAndBond[i]["cash"]["amount"])
+    dynamicBalance['stock']['price'] = s
+    dynamicBalance['bond']['price'] = b
+    dynamicBalance = rebalance(dynamicBalance)
+    stockVal = s * dynamicBalance["stock"]["amount"]
+    bondVal = b * dynamicBalance["bond"]["amount"]
+    cashVal = dynamicBalance["cash"]["amount"]
+    dynamicPortfolio.append(stockVal + bondVal + cashVal)
     onlyStock.append(s * balanceOnlyStock["stock"]["amount"])
 
 print(snp)
 print(treas)
 
 plt.subplot(2,1,1)
-plt.plot(portfolio[5], label='Portfolio')
+plt.plot(staticPortfolio[5], label='Static Portfolio')
+plt.plot(dynamicPortfolio, label='Dynamic Portfolio')
 plt.plot(onlyStock, label='Only Stock')
 plt.subplot(2,1,2)
 plt.plot(snp['Close'], label='Stock')
