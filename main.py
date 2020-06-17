@@ -51,7 +51,7 @@ for i in range(0, 9):
 dynamicPortfolio.append((balanceStockAndBond[i]["stock"]["price"] * balanceStockAndBond[i]["stock"]["amount"]) + 
             (balanceStockAndBond[i]["bond"]["price"] * balanceStockAndBond[i]["bond"]["amount"]))
 
-for s, b in zip(snp['Close'], treas['Close']):
+for s, b, hi, lo in zip(snp['Close'], treas['Close'], envelopeHiBounds(snp['Close'], 50, 0.1), envelopeLoBounds(snp['Close'], 50, 0.1)):
     for i in range(0, 9):
         balanceStockAndBond[i]['stock']['price'] = s
         balanceStockAndBond[i]['bond']['price'] = b
@@ -63,6 +63,16 @@ for s, b in zip(snp['Close'], treas['Close']):
         stock[i].append(balanceStockAndBond[i]["stock"]["amount"])
         bond[i].append(balanceStockAndBond[i]["bond"]["amount"])
         cash[i].append(balanceStockAndBond[i]["cash"]["amount"])
+    if s > hi:
+        dynamicBalance['stock']['ratio'] = 0
+        dynamicBalance['bond']['ratio'] = 10
+    elif s < lo:
+        dynamicBalance['stock']['ratio'] = 10
+        dynamicBalance['bond']['ratio'] = 0
+    else:
+        dynamicRatio = math.floor(10 * (s - lo) / (hi - lo))
+        dynamicBalance['stock']['ratio'] = 10 - dynamicRatio
+        dynamicBalance['bond']['ratio'] = dynamicRatio
     dynamicBalance['stock']['price'] = s
     dynamicBalance['bond']['price'] = b
     dynamicBalance = rebalance(dynamicBalance)
@@ -79,6 +89,7 @@ plt.subplot(2,1,1)
 plt.plot(staticPortfolio[5], label='Static Portfolio')
 plt.plot(dynamicPortfolio, label='Dynamic Portfolio')
 plt.plot(onlyStock, label='Only Stock')
+plt.legend(loc='upper left')
 plt.subplot(2,1,2)
 plt.plot(snp['Close'], label='Stock')
 plt.plot(snp['Close'].ewm(50).mean(), label='EMA')
