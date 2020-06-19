@@ -64,16 +64,7 @@ for s, b, hi, lo in zip(snp['Close'], treas['Close'], envelopeHiBounds(snp['Clos
         stock[i].append(balanceStockAndBond[i]["stock"]["amount"])
         bond[i].append(balanceStockAndBond[i]["bond"]["amount"])
         cash[i].append(balanceStockAndBond[i]["cash"]["amount"])
-    if s > hi:
-        dynamicBalance['stock']['ratio'] = 0
-        dynamicBalance['bond']['ratio'] = 10
-    elif s < lo:
-        dynamicBalance['stock']['ratio'] = 10
-        dynamicBalance['bond']['ratio'] = 0
-    else:
-        dynamicRatio = math.floor(10 * (s - lo) / (hi - lo))
-        dynamicBalance['stock']['ratio'] = 10 - dynamicRatio
-        dynamicBalance['bond']['ratio'] = dynamicRatio
+    dynamicBalance = rearrangeRatio(dynamicBalance, hi, lo, s)
     ratio.append(dynamicBalance['stock']['ratio'])
     dynamicBalance['stock']['price'] = s
     dynamicBalance['bond']['price'] = b

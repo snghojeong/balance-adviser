@@ -50,3 +50,17 @@ def rebalance(balance):
         change -= v['price'] * amount
     balance['cash']['amount'] = change
     return balance
+
+def rearrangeRatio(balance, hi, lo, val):
+    if val > hi:
+        balance['stock']['ratio'] = 0
+        balance['bond']['ratio'] = 10
+    elif val < lo:
+        balance['stock']['ratio'] = 10
+        balance['bond']['ratio'] = 0
+    else:
+        dynamicRatio = math.floor(10 * (val - lo) / (hi - lo))
+        balance['stock']['ratio'] = 10 - dynamicRatio
+        balance['bond']['ratio'] = dynamicRatio
+    return balance
+
