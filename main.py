@@ -3,6 +3,12 @@ from matplotlib import pyplot as plt
 from rebalance import *
 from envelope import *
 
+class Portfolio:
+    def __init__():
+        self.name = 'Portfolio'
+    def rebalance(balance):
+        self.balance = balance
+
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
 treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
 
