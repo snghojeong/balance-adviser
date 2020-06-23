@@ -3,16 +3,40 @@ from matplotlib import pyplot as plt
 from rebalance import *
 from envelope import *
 
-class Portfolio:
-    def __init__():
-        self.name = 'Portfolio'
-    def rebalance(balance):
+exampleStaticPortfolio = [
+        { "ticker": "^GSPC", "ratio": 5 },
+        { "ticker": "TLT",   "ratio": 5 }
+        ]
+
+class StaticPortfolio:
+    def __init__(self, portfolio, cash):
+        self.name = 'StaticPortfolio'
+        ratios = [float(v['ratio']) for v in portfolio]
+        dataList = []
+        balance = dict()
+        for item in portfolio:
+            itemData = data.DataReader(item["ticker"], 'yahoo', start='2003-01-02')
+            dataList.append(itemData)
+            price = itemData['Close'][0]
+            amount = math.floor(cash * (item["ratio"] / np.abs(ratios).sum()) / price)
+            balance[item["ticker"]] = { "price": price, 
+                                        "amount": amount, 
+                                        "ratio": item["ratio"] }
+        balance["cash"] = {"price": 1, "amount": 0, "ratio": 0}
+        print(balance)
+
+class DynamicPortfolio:
+    def __init__(self):
+        self.name = 'DynamicPortfolio'
+    def calculate(balance):
         self.balance = balance
 
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
 treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
 
 initialCash = 1000000
+
+staticPort = StaticPortfolio(exampleStaticPortfolio, initialCash)
 
 balanceOnlyStock = {
         "stock": { "price": 0, "amount": 0 }
@@ -81,9 +105,6 @@ for s, b, hi, lo in zip(snp['Close'], treas['Close'], envelopeHiBounds(snp['Clos
     dynamicPortfolio.append(stockVal + bondVal + cashVal)
     onlyStock.append(s * balanceOnlyStock["stock"]["amount"])
 
-print(snp)
-print(treas)
-
 plt.subplot(3,1,1)
 plt.plot(staticPortfolio[5], label='Static Portfolio')
 plt.plot(dynamicPortfolio, label='Dynamic Portfolio')
@@ -98,3 +119,5 @@ plt.legend(loc='upper left')
 plt.subplot(3,1,3)
 plt.plot(ratio, label='Stock ratio')
 plt.show()
+
+print(dynamicBalance)
