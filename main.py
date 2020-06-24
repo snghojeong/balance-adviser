@@ -4,20 +4,18 @@ from rebalance import *
 from envelope import *
 
 exampleStaticPortfolio = [
-        { "ticker": "^GSPC", "ratio": 5 },
-        { "ticker": "TLT",   "ratio": 5 }
+        { "ticker": "^GSPC", "ratio": 5, "data": 0 },
+        { "ticker": "TLT",   "ratio": 5, "data": 0 }
         ]
 
 class StaticPortfolio:
     def __init__(self, portfolio, cash):
         self.name = 'StaticPortfolio'
         ratios = [float(v['ratio']) for v in portfolio]
-        dataList = []
         balance = dict()
         for item in portfolio:
-            itemData = data.DataReader(item["ticker"], 'yahoo', start='2003-01-02')
-            dataList.append(itemData)
-            price = itemData['Close'][0]
+            item["data"] = data.DataReader(item["ticker"], 'yahoo', start='2003-01-02')
+            price = item["data"]['Close'][0]
             amount = math.floor(cash * (item["ratio"] / np.abs(ratios).sum()) / price)
             balance[item["ticker"]] = { "price": price, 
                                         "amount": amount, 
