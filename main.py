@@ -20,7 +20,9 @@ class StaticPortfolio:
             balance[item["ticker"]] = { "price": price, 
                                         "amount": amount, 
                                         "ratio": item["ratio"] }
-        balance["cash"] = {"price": 1, "amount": 0, "ratio": 0}
+        for s, b in zip(portfolio[0]["data"]['Close'], portfolio[1]["data"]['Close']):
+            balance['stock']['price'] = s
+            balance = rebalance(balance)
         print(balance)
 
 class DynamicPortfolio:
