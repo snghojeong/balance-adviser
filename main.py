@@ -5,7 +5,7 @@ from envelope import *
 
 exampleStaticPortfolio = [
         { "ticker": "^GSPC", "ratio": 5, "data": 0 },
-        { "ticker": "TLT",   "ratio": 5, "data": 0 }
+        { "ticker": "SHY",   "ratio": 5, "data": 0 }
         ]
 
 class StaticPortfolio:
