@@ -5,7 +5,7 @@ from envelope import *
 
 exampleStaticPortfolio = [
         { "ticker": "^GSPC", "ratio": 5, "data": 0 },
-        { "ticker": "SHY",   "ratio": 5, "data": 0 }
+        { "ticker": "TLT",   "ratio": 5, "data": 0 }
         ]
 
 class StaticPortfolio:
@@ -20,8 +20,12 @@ class StaticPortfolio:
             balance[item["ticker"]] = { "price": price, 
                                         "amount": amount, 
                                         "ratio": item["ratio"] }
+        balance['cash']['price'] = 1
+        balance['cash']['amount'] = 0
+        balance['cash']['ratio'] = 0
         for s, b in zip(portfolio[0]["data"]['Close'], portfolio[1]["data"]['Close']):
             balance['stock']['price'] = s
+            balance['bond']['price'] = s
             balance = rebalance(balance)
         print(balance)
 
