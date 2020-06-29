@@ -29,8 +29,8 @@ class DynamicPortfolio:
         self.balance = balance
 
 # TLT start='2003-01-02'
-snp = data.DataReader('UPRO', 'yahoo', start='2015-06-29')
-treas = data.DataReader('TLT', 'yahoo', start='2015-06-29')
+snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
+treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
 
 initialCash = 1000000
 
@@ -119,5 +119,3 @@ plt.plot(ratio, label='Stock ratio')
 plt.show()
 
 print(dynamicBalance)
-snp500 = data.DataReader('UPRO', 'yahoo')
-print(snp500)
