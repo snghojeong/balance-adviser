@@ -22,12 +22,6 @@ class StaticPortfolio:
                                         "ratio": item["ratio"] }
         print(balance)
 
-class DynamicPortfolio:
-    def __init__(self):
-        self.name = 'DynamicPortfolio'
-    def calculate(balance):
-        self.balance = balance
-
 # TLT start='2003-01-02'
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
 treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
