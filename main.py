@@ -113,3 +113,4 @@ plt.plot(ratio, label='Stock ratio')
 plt.show()
 
 print(dynamicBalance)
+print(ratio)
