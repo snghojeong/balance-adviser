@@ -11,12 +11,12 @@ exampleStaticPortfolio = [
 class StaticPortfolio:
     def __init__(self, portfolio, cash):
         self.name = 'StaticPortfolio'
-        ratios = [float(v['ratio']) for v in portfolio]
+        ratiosSum = np.abs([float(v['ratio']) for v in portfolio]).sum())
         balance = dict()
         for item in portfolio:
             item["data"] = data.DataReader(item["ticker"], 'yahoo', start='2003-01-02')
             price = item["data"]['Close'][0]
-            amount = math.floor(cash * (item["ratio"] / np.abs(ratios).sum()) / price)
+            amount = math.floor(cash * (item["ratio"] / ratiosSum / price)
             balance[item["ticker"]] = { "price": price, 
                                         "amount": amount, 
                                         "ratio": item["ratio"] }
