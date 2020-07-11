@@ -20,7 +20,6 @@ class StaticPortfolio:
             balance[item["ticker"]] = { "price": price, 
                                         "amount": amount, 
                                         "ratio": item["ratio"] }
-        print(balance)
 
 # TLT start='2003-01-02'
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
