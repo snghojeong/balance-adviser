@@ -110,6 +110,3 @@ plt.legend(loc='upper left')
 plt.subplot(3,1,3)
 plt.plot(ratio, label='Stock ratio')
 plt.show()
-
-print(dynamicBalance)
-print(ratio)
