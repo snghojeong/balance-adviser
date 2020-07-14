@@ -11,12 +11,12 @@ exampleStaticPortfolio = [
 class StaticPortfolio:
     def __init__(self, portfolio, cash):
         self.name = 'StaticPortfolio'
-        ratiosSum = np.abs([float(v['ratio']) for v in portfolio]).sum())
+        ratiosSum = np.abs([float(v['ratio']) for v in portfolio]).sum()
         balance = dict()
         for item in portfolio:
             item["data"] = data.DataReader(item["ticker"], 'yahoo', start='2003-01-02')
             price = item["data"]['Close'][0]
-            amount = math.floor(cash * (item["ratio"] / ratiosSum / price)
+            amount = math.floor(cash * (item["ratio"] / ratiosSum / price))
             balance[item["ticker"]] = { "price": price, 
                                         "amount": amount, 
                                         "ratio": item["ratio"] }
@@ -73,7 +73,7 @@ for i in range(0, 9):
 dynamicPortfolio.append((balanceStockAndBond[i]["stock"]["price"] * balanceStockAndBond[i]["stock"]["amount"]) + 
             (balanceStockAndBond[i]["bond"]["price"] * balanceStockAndBond[i]["bond"]["amount"]))
 
-for s, b, hi, lo in zip(snp['Close'], treas['Close'], envelopeHiBounds(snp['Close'], 50, 0.2), envelopeLoBounds(snp['Close'], 50, 0.2)):
+for s, b, hi, lo in zip(snp['Close'], treas['Close'], envelopeHiBounds(snp['Close'], 50, 0.1), envelopeLoBounds(snp['Close'], 50, 0.1)):
     for i in range(0, 9):
         balanceStockAndBond[i]['stock']['price'] = s
         balanceStockAndBond[i]['bond']['price'] = b
@@ -104,8 +104,8 @@ plt.legend(loc='upper left')
 plt.subplot(3,1,2)
 plt.plot(snp['Close'], label='Stock')
 plt.plot(snp['Close'].ewm(50).mean(), label='EMA')
-plt.plot(envelopeHiBounds(snp['Close'], 50, 0.2), label='upper')
-plt.plot(envelopeLoBounds(snp['Close'], 50, 0.2), label='lower')
+plt.plot(envelopeHiBounds(snp['Close'], 50, 0.1), label='upper')
+plt.plot(envelopeLoBounds(snp['Close'], 50, 0.1), label='lower')
 plt.legend(loc='upper left')
 plt.subplot(3,1,3)
 plt.plot(ratio, label='Stock ratio')
