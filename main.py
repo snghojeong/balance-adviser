@@ -73,7 +73,8 @@ for i in range(0, 9):
 dynamicPortfolio.append((balanceStockAndBond[i]["stock"]["price"] * balanceStockAndBond[i]["stock"]["amount"]) + 
             (balanceStockAndBond[i]["bond"]["price"] * balanceStockAndBond[i]["bond"]["amount"]))
 
-for s, b, hi, lo in zip(snp['Close'], treas['Close'], envelopeHiBounds(snp['Close'], 50), envelopeLoBounds(snp['Close'], 50)):
+ewmCnt = 100
+for s, b, hi, lo in zip(snp['Close'], treas['Close'], envelopeHiBounds(snp['Close'], ewmCnt), envelopeLoBounds(snp['Close'], ewmCnt)):
     for i in range(0, 9):
         balanceStockAndBond[i]['stock']['price'] = s
         balanceStockAndBond[i]['bond']['price'] = b
@@ -103,9 +104,9 @@ plt.plot(onlyStock, label='Only Stock')
 plt.legend(loc='upper left')
 plt.subplot(3,1,2)
 plt.plot(snp['Close'], label='Stock')
-plt.plot(snp['Close'].ewm(50).mean(), label='EMA')
-plt.plot(envelopeHiBounds(snp['Close'], 50), label='upper')
-plt.plot(envelopeLoBounds(snp['Close'], 50), label='lower')
+plt.plot(snp['Close'].ewm(ewmCnt).mean(), label='EMA')
+plt.plot(envelopeHiBounds(snp['Close'], ewmCnt), label='upper')
+plt.plot(envelopeLoBounds(snp['Close'], ewmCnt), label='lower')
 plt.legend(loc='upper left')
 plt.subplot(3,1,3)
 plt.plot(ratio, label='Stock ratio')

@@ -5,4 +5,4 @@ def envelopeLoBounds(valueList, wnd):
     return envelopeBounds(valueList, wnd, 0.05)
 
 def envelopeBounds(valueList, wnd, ratio):
-    return valueList.ewm(50).mean() * (1 + ratio)
+    return valueList.ewm(wnd).mean() * (1 + ratio)
