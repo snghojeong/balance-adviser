@@ -112,4 +112,4 @@ plt.subplot(3,1,3)
 plt.plot(ratio, label='Stock ratio')
 plt.show()
 
-print(ratio[-1], ": ", 10 - ratio[-1])
+print('%d(stock) : %d(bond)' % (ratio[-1], 10 - ratio[-1]))
