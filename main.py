@@ -3,9 +3,13 @@ from matplotlib import pyplot as plt
 from rebalance import *
 from envelope import *
 
+# TLT start='2003-01-02'
+snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
+treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
+
 exampleStaticPortfolio = [
-        { "ticker": "^GSPC", "ratio": 5, "data": 0 },
-        { "ticker": "TLT",   "ratio": 5, "data": 0 }
+        { "name": "S&P500", "ratio": 5, "data": snp },
+        { "name": "TLT",   "ratio": 5, "data": treas }
         ]
 
 class StaticPortfolio:
@@ -14,16 +18,11 @@ class StaticPortfolio:
         ratiosSum = np.abs([float(v['ratio']) for v in portfolio]).sum()
         balance = dict()
         for item in portfolio:
-            item["data"] = data.DataReader(item["ticker"], 'yahoo', start='2003-01-02')
             price = item["data"]['Close'][0]
             amount = math.floor(cash * (item["ratio"] / ratiosSum / price))
-            balance[item["ticker"]] = { "price": price, 
+            balance[item["name"]] = { "price": price, 
                                         "amount": amount, 
                                         "ratio": item["ratio"] }
-
-# TLT start='2003-01-02'
-snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
-treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
 
 initialCash = 1000000
 
