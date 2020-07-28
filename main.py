@@ -1,3 +1,4 @@
+import pandas as pd
 from pandas_datareader import data
 from matplotlib import pyplot as plt
 from rebalance import *
@@ -21,8 +22,11 @@ class StaticPortfolio:
             price = item["data"]['Close'][0]
             amount = math.floor(cash * (item["ratio"] / ratiosSum / price))
             balance[item["name"]] = { "price": price, 
-                                        "amount": amount, 
-                                        "ratio": item["ratio"] }
+                                      "amount": amount, 
+                                      "ratio": item["ratio"] }
+        date_range = pd.period_range(start='2003-01-02', end='2020-07-27', freq='D')
+        for d in date_range.astype(str):
+            print(snp['Close'][d])
 
 initialCash = 1000000
 
