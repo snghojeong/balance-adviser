@@ -26,7 +26,8 @@ class StaticPortfolio:
                                       "ratio": item["ratio"] }
         date_range = pd.period_range(start='2003-01-02', end='2020-07-27', freq='D')
         for d in date_range.astype(str):
-            print(snp['Close'][d])
+            if d in snp['Close']:
+                print(snp['Close'][d])
 
 initialCash = 1000000
 
