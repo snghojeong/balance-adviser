@@ -24,9 +24,10 @@ class StaticPortfolio:
             balance[item["name"]] = { "price": price, 
                                       "amount": amount, 
                                       "ratio": item["ratio"] }
-        date_range = pd.period_range(start='2003-01-02', end=snp['Close'].keys()[-1], freq='D')
+        date_range = pd.period_range(start=snp['Close'].keys()[0], end=snp['Close'].keys()[-1], freq='D')
         for d in date_range.astype(str):
             if d in snp['Close']:
+                print(d)
                 print(snp['Close'][d])
 
 initialCash = 1000000
