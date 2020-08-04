@@ -1,13 +1,13 @@
 import pandas as pd
-import datetime
+from datetime import datetime
 from pandas_datareader import data
 from matplotlib import pyplot as plt
 from rebalance import *
 from envelope import *
 
 # TLT start='2003-01-02'
-snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
-treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
+snp = data.DataReader('^GSPC', 'yahoo', start='1900-01-01')
+treas = data.DataReader('TLT', 'yahoo', start='1900-01-01')
 
 exampleStaticPortfolio = [
         { "name": "S&P500", "ratio": 5, "data": snp },
@@ -19,22 +19,26 @@ class StaticPortfolio:
         self.name = 'StaticPortfolio'
         ratiosSum = np.abs([float(v['ratio']) for v in portfolio]).sum()
         balance = dict()
-        startDate = datetime.datetime.now()
-        endDate = datetime.datetime.now()
+        startDate = datetime(1900, 1, 1, 0, 0)
+        endDate = datetime.now()
         for item in portfolio:
             price = item["data"]['Close'][0]
             amount = math.floor(cash * (item["ratio"] / ratiosSum / price))
             balance[item["name"]] = { "price": price, 
                                       "amount": amount, 
                                       "ratio": item["ratio"] }
-            if startDate > item["data"]['Close'].keys()[0]:
+            if startDate < item["data"]['Close'].keys()[0]:
                 startDate = item["data"]['Close'].keys()[0]
-            if endDate < item["data"]['Close'].keys()[-1]:
+            if endDate > item["data"]['Close'].keys()[-1]:
                 endDate = item["data"]['Close'].keys()[-1]
+            print("Start: ")
+            print(startDate)
+            print("End: ")
+            print(endDate)
         date_range = pd.period_range(start=snp['Close'].keys()[0], end=snp['Close'].keys()[-1], freq='D')
-        for d in date_range.astype(str):
-            if d in snp['Close']:
-                print(snp['Close'][d])
+#       for d in date_range.astype(str):
+#           if d in snp['Close']:
+#               print(snp['Close'][d])
         print(startDate)
         print(endDate)
 
