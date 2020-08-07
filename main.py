@@ -32,11 +32,11 @@ class StaticPortfolio:
             if endDate > item["data"]['Close'].keys()[-1]:
                 endDate = item["data"]['Close'].keys()[-1]
         date_range = pd.period_range(start=startDate, end=endDate, freq='D')
-#       for d in date_range.astype(str):
-#           if d in snp['Close']:
-#               print(snp['Close'][d])
-        print(startDate)
-        print(endDate)
+        for d in date_range.astype(str):
+            for item in portfolio:
+                if d in item["data"]["Close"]:
+                    balance[item["name"]]["price"] = item["data"]["Close"][d]
+            balance = rebalance(balance)
 
 initialCash = 1000000
 
