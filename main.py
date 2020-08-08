@@ -21,6 +21,9 @@ class StaticPortfolio:
         balance = dict()
         startDate = datetime(1900, 1, 1, 0, 0)
         endDate = datetime.now()
+        balance["cash"] = { "price": 1, 
+                            "amount": 0, 
+                            "ratio": 0 }
         for item in portfolio:
             price = item["data"]['Close'][0]
             amount = math.floor(cash * (item["ratio"] / ratiosSum / price))
