@@ -6,8 +6,8 @@ from rebalance import *
 from envelope import *
 
 # TLT start='2003-01-02'
-snp = data.DataReader('^GSPC', 'yahoo', start='1900-01-01')
-treas = data.DataReader('TLT', 'yahoo', start='1900-01-01')
+snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
+treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
 
 exampleStaticPortfolio = [
         { "name": "S&P500", "ratio": 5, "data": snp },
