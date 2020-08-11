@@ -17,6 +17,7 @@ exampleStaticPortfolio = [
 class StaticPortfolio:
     def __init__(self, portfolio, cash):
         self.name = 'StaticPortfolio'
+        self.values = []
         ratiosSum = np.abs([float(v['ratio']) for v in portfolio]).sum()
         balance = dict()
         startDate = datetime(1900, 1, 1, 0, 0)
@@ -40,6 +41,10 @@ class StaticPortfolio:
                 if d in item["data"]["Close"]:
                     balance[item["name"]]["price"] = item["data"]["Close"][d]
             balance = rebalance(balance)
+            value = 0
+            for k, v in balance.items():
+                value = value + (v["price"] * v["amount"])
+            self.values.append(value)
 
 initialCash = 1000000
 
@@ -114,7 +119,8 @@ for s, b, hi, lo in zip(snp['Close'], treas['Close'], envelopeHiBounds(snp['Clos
     onlyStock.append(s * balanceOnlyStock["stock"]["amount"])
 
 plt.subplot(3,1,1)
-plt.plot(staticPortfolio[5], label='Static Portfolio')
+#plt.plot(staticPortfolio[5], label='Static Portfolio')
+plt.plot(staticPort, label='Static Portfolio')
 plt.plot(dynamicPortfolio, label='Dynamic Portfolio')
 plt.plot(onlyStock, label='Only Stock')
 plt.legend(loc='upper left')
