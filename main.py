@@ -120,7 +120,7 @@ for s, b, hi, lo in zip(snp['Close'], treas['Close'], envelopeHiBounds(snp['Clos
 
 plt.subplot(3,1,1)
 #plt.plot(staticPortfolio[5], label='Static Portfolio')
-plt.plot(staticPort, label='Static Portfolio')
+plt.plot(staticPort.values, label='Static Portfolio')
 plt.plot(dynamicPortfolio, label='Dynamic Portfolio')
 plt.plot(onlyStock, label='Only Stock')
 plt.legend(loc='upper left')
