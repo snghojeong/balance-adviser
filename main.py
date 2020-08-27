@@ -94,7 +94,7 @@ for i in range(0, 9):
 dynamicPortfolio.append((balanceStockAndBond[i]["stock"]["price"] * balanceStockAndBond[i]["stock"]["amount"]) + 
             (balanceStockAndBond[i]["bond"]["price"] * balanceStockAndBond[i]["bond"]["amount"]))
 
-ewmCnt = 100
+ewmCnt = 20
 for s, b, hi, lo in zip(snp['Close'], treas['Close'], envelopeHiBounds(snp['Close'], ewmCnt), envelopeLoBounds(snp['Close'], ewmCnt)):
     for i in range(0, 9):
         balanceStockAndBond[i]['stock']['price'] = s

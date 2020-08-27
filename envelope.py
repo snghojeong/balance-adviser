@@ -1,5 +1,5 @@
 def envelopeHiBounds(valueList, wnd):
-    return envelopeBounds(valueList, wnd, 0.1)
+    return envelopeBounds(valueList, wnd, 0.05)
 
 def envelopeLoBounds(valueList, wnd):
     return envelopeBounds(valueList, wnd, 0.05)
