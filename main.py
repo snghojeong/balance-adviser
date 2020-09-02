@@ -5,7 +5,6 @@ from matplotlib import pyplot as plt
 from rebalance import *
 from envelope import *
 
-# TLT start='2003-01-02'
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
 treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
 
@@ -120,7 +119,6 @@ for s, b, hi, lo in zip(snp['Close'], treas['Close'], envelopeHiBounds(snp['Clos
 
 plt.subplot(3,1,1)
 plt.plot(staticPortfolio[5], label='Static Portfolio')
-#plt.plot(staticPort.values, label='Static Portfolio')
 plt.plot(dynamicPortfolio, label='Dynamic Portfolio')
 plt.plot(onlyStock, label='Only Stock')
 plt.legend(loc='upper left')
