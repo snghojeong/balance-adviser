@@ -48,6 +48,11 @@ class StaticPortfolio:
                     value = value + (v["price"] * v["amount"])
                 self.values.append(value)
 
+class DynamicPortfolio:
+    def __init__(self, portfolio, cash):
+        self.name = 'DynamicPortfolio'
+        self.values = []
+
 initialCash = 1000000
 
 staticPort = StaticPortfolio(exampleStaticPortfolio, initialCash)
