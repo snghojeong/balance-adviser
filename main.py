@@ -36,17 +36,15 @@ class StaticPortfolio:
                 endDate = item["data"]['Close'].keys()[-1]
         date_range = pd.period_range(start=startDate, end=endDate, freq='D')
         for d in date_range.astype(str):
-            changed = False
             for item in portfolio:
                 if d in item["data"]["Close"]:
                     balance[item["name"]]["price"] = item["data"]["Close"][d]
                     changed = True
-            if changed:
-                balance = rebalance(balance)
-                value = 0
-                for k, v in balance.items():
-                    value = value + (v["price"] * v["amount"])
-                self.values.append(value)
+            balance = rebalance(balance)
+            value = 0
+            for k, v in balance.items():
+                value = value + (v["price"] * v["amount"])
+            self.values.append(value)
 
 class DynamicPortfolio:
     def __init__(self, portfolio, cash):
