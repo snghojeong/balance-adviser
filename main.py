@@ -46,10 +46,31 @@ class StaticPortfolio:
                 value = value + (v["price"] * v["amount"])
             self.values.append(value)
 
-class DynamicPortfolio:
-    def __init__(self, portfolio, cash):
-        self.name = 'DynamicPortfolio'
+class Simulator:
+    def __init__(self, data, cash):
         self.values = []
+        balance = dict()
+        startDate = datetime(1900, 1, 1, 0, 0)
+        endDate = datetime.now()
+        balance["cash"] = { "price": 1, 
+                            "amount": 0, 
+                            "ratio": 0 }
+        for item in data:
+            price = item['Close'][0]
+            if startDate < item['Close'].keys()[0]:
+                startDate = item['Close'].keys()[0]
+            if endDate > item['Close'].keys()[-1]:
+                endDate = item['Close'].keys()[-1]
+        date_range = pd.period_range(start=startDate, end=endDate, freq='D')
+        for d in date_range.astype(str):
+            for item in data:
+                if d in item["Close"]:
+                    balance[item["name"]]["price"] = item["Close"][d]
+            balance = rebalance(balance)
+            value = 0
+            for k, v in balance.items():
+                value = value + (v["price"] * v["amount"])
+            self.values.append(value)
 
 initialCash = 1000000
 
