@@ -61,11 +61,12 @@ class Simulator:
                 startDate = item['Close'].keys()[0]
             if endDate > item['Close'].keys()[-1]:
                 endDate = item['Close'].keys()[-1]
+        data_elem = dict()
         date_range = pd.period_range(start=startDate, end=endDate, freq='D')
         for d in date_range.astype(str):
             for item in data:
                 if d in item["Close"]:
-                    balance[item["name"]]["price"] = item["Close"][d]
+                    data_elem[item["name"]] = item["Close"][d]
             balance = rebalance(balance)
             value = 0
             for k, v in balance.items():
