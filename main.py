@@ -67,7 +67,7 @@ class Simulator:
             for item in data:
                 if d in item["Close"]:
                     data_elem[item["name"]] = item["Close"][d]
-            balance = rebalance(balance)
+            balance = rebalance(balance, data_elem)
             value = 0
             for k, v in balance.items():
                 value = value + (v["price"] * v["amount"])
