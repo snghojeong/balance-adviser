@@ -47,7 +47,7 @@ class StaticPortfolio:
             self.values.append(value)
 
 class Simulator:
-    def __init__(self, data, cash):
+    def __init__(self, data, cash, portfolioj):
         self.values = []
         balance = dict()
         startDate = datetime(1900, 1, 1, 0, 0)
@@ -67,7 +67,7 @@ class Simulator:
             for item in data:
                 if d in item["Close"]:
                     data_elem[item["name"]] = item["Close"][d]
-            balance = portfolio.calc(balance, data_elem)
+            balance = portfolio.rebalance(balance, data_elem)
             value = 0
             for k, v in balance.items():
                 value = value + (v["price"] * v["amount"])
