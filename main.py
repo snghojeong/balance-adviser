@@ -46,8 +46,14 @@ class StaticPortfolio:
                 value = value + (v["price"] * v["amount"])
             self.values.append(value)
 
+class Portfolio:
+    def __init__(self):
+        self.name = 'Portfolio'
+    def rebalance(balance, price):
+        return balance
+
 class Simulator:
-    def __init__(self, data, cash, portfolioj):
+    def __init__(self, data, cash, portfolio):
         self.values = []
         balance = dict()
         startDate = datetime(1900, 1, 1, 0, 0)
