@@ -47,10 +47,11 @@ class StaticPortfolio:
             self.values.append(value)
 
 class Portfolio:
-    def __init__(self):
+    def __init__(self, ratio):
         self.name = 'Portfolio'
+        self.ratio = ratio
     def rebalance(balance, price):
-        return balance
+        return rebalance(balance)
 
 class Simulator:
     def __init__(self, data, cash, portfolio):
