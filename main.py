@@ -60,8 +60,7 @@ class Simulator:
         startDate = datetime(1900, 1, 1, 0, 0)
         endDate = datetime.now()
         balance["cash"] = { "price": 1, 
-                            "amount": 0, 
-                            "ratio": 0 }
+                            "amount": 0 }
         for item in data:
             price = item['Close'][0]
             if startDate < item['Close'].keys()[0]:
