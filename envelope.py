@@ -9,3 +9,6 @@ def envelopeBounds(valueList, wnd, ratio):
 
 def envelope(valueList, wnd, ratio):
     return valueList.ewm(wnd).mean() * (1 - ratio)
+
+def envelopeMean(valueList, wnd, ratio):
+    return valueList.mean() * (1 - ratio)
