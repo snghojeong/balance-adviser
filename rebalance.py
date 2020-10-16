@@ -24,6 +24,9 @@ def prices(balance):
 def ratios(balance):
     return [ float(v['ratio']) for k, v in balance.items() ]
 
+def assets(balance):
+    return np.multiply(amounts(balance), prices(balance))
+
 def rebalance(balance):
     assets = np.multiply(amounts(balance), prices(balance))
     normAssets = assets / np.abs(assets).sum()
