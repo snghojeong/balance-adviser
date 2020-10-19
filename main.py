@@ -10,8 +10,8 @@ snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
 treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
 
 exampleStaticPortfolio = [
-        { "name": "S&P500", "ratio": 5, "data": snp },
-        { "name": "TLT",   "ratio": 5, "data": treas }
+        { "name": "S&P500", "ratio": 7, "data": snp },
+        { "name": "TLT",   "ratio": 3, "data": treas }
         ]
 
 class StaticPortfolio:
