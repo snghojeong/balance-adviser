@@ -51,6 +51,7 @@ class Portfolio:
     def __init__(self, ratio):
         self.name = 'Portfolio'
         self.ratio = ratio
+        self.values = []
     def rebalance(balance, price):
         return rebalance(balance)
 
