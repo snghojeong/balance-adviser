@@ -81,7 +81,7 @@ class Simulator:
                 value = value + (v["price"] * v["amount"])
             self.values.append(value)
 
-initialCash = 1000000
+initialCash = 10000
 
 staticPort = StaticPortfolio(exampleStaticPortfolio, initialCash)
 
@@ -106,7 +106,7 @@ dynamicPortfolio.append((dynamicBalance["stock"]["price"] * dynamicBalance["stoc
             (dynamicBalance["bond"]["price"] * dynamicBalance["bond"]["amount"]))
 
 ratio = []
-ewmCnt = 20
+ewmCnt = 30
 for s, b, hi, lo in zip(snp['Close'], treas['Close'], envelopeHiBounds(snp['Close'], ewmCnt), envelopeLoBounds(snp['Close'], ewmCnt)):
     dynamicBalance = rearrangeRatio(dynamicBalance, hi, lo, s)
     ratio.append(dynamicBalance['stock']['ratio'])
