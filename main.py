@@ -106,7 +106,7 @@ dynamicPortfolio.append((dynamicBalance["stock"]["price"] * dynamicBalance["stoc
             (dynamicBalance["bond"]["price"] * dynamicBalance["bond"]["amount"]))
 
 ratio = []
-ewmCnt = 30
+ewmCnt = 50
 for s, b, hi, lo in zip(snp['Close'], treas['Close'], envelopeHiBounds(snp['Close'], ewmCnt), envelopeLoBounds(snp['Close'], ewmCnt)):
     dynamicBalance = rearrangeRatio(dynamicBalance, hi, lo, s)
     ratio.append(dynamicBalance['stock']['ratio'])
