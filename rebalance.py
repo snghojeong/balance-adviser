@@ -1,7 +1,6 @@
 import math
 import numpy as np
-
-# Return assets dictionary 
+ 
 def assetsDict(balance):
     for k, v in balance.items():
         v['value'] = v['amount'] * v['price']
