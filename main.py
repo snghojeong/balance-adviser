@@ -9,6 +9,7 @@ from envelope import *
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
 treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
 sbond = data.DataReader('SHY', 'yahoo', start='2003-01-02')
+gold = data.DataReader('GLD', 'yahoo', start='2003-01-02')
 
 exampleStaticPortfolio = [
         { "name": "S&P500", "ratio": 5, "data": snp },
