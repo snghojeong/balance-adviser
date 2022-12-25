@@ -4,6 +4,7 @@ from pandas_datareader import data
 from matplotlib import pyplot as plt
 from rebalance import *
 from envelope import *
+import bt
 
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
