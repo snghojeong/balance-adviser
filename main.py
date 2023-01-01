@@ -4,7 +4,6 @@ from pandas_datareader import data
 from matplotlib import pyplot as plt
 from rebalance import *
 from envelope import *
-import bt
 
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
@@ -13,9 +12,10 @@ sbond = data.DataReader('SHY', 'yahoo', start='2003-01-02')
 gold = data.DataReader('GLD', 'yahoo', start='2003-01-02')
 
 exampleStaticPortfolio = [
-        { "name": "S&P500", "ratio": 5, "data": snp },
+        { "name": "S&P500", "ratio": 3, "data": snp },
         { "name": "TLT",   "ratio": 3, "data": treas },
-        { "name": "SHY",   "ratio": 2, "data": sbond }
+        { "name": "SHY",   "ratio": 2, "data": sbond },
+        { "name": "GLD",   "ratio": 2, "data": gld }
         ]
 
 class StaticPortfolio:
