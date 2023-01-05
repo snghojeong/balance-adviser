@@ -13,6 +13,7 @@ s = bt.Strategy('s1', [bt.algos.RunMonthly(),
 test = bt.Backtest(s, data)
 res = bt.run(test)
 res.plot()
+res.display()
 
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
