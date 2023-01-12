@@ -17,6 +17,19 @@ res.display()
 res.plot_histogram()
 res.plot_security_weights()
 
+# create our new strategy
+s2 = bt.Strategy('s2', [bt.algos.RunWeekly(),
+                        bt.algos.SelectAll(),
+                        bt.algos.WeighInvVol(),
+                        bt.algos.Rebalance()])
+
+# now let's test it with the same data set. We will also compare it with our first backtest.
+test2 = bt.Backtest(s2, data)
+# we include test here to see the results side-by-side
+res2 = bt.run(test, test2)
+
+res2.plot();
+
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
 treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
