@@ -29,6 +29,7 @@ test2 = bt.Backtest(s2, data)
 res2 = bt.run(test, test2)
 
 res2.plot();
+res2.display()
 
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
