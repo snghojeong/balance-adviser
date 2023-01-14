@@ -6,6 +6,11 @@ def assetsDict(balance):
         v['value'] = v['amount'] * v['price']
     return balance
 
+def assetsDict2(balance):
+    for k, v in balance.items():
+        v['value'] = v['amount'] * v['price']
+    return balance
+
 def normalize(balance):
     total = 0
     for k, v in balance.items():
