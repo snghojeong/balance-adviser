@@ -89,6 +89,26 @@ res.plot()
 # and some performance stats
 res.display()
 
+def above_sma(tickers, sma_per=50, start='2010-01-01', name='above_sma'):
+    """
+    Long securities that are above their n period
+    Simple Moving Averages with equal weights.
+    """
+    # download data
+    data = bt.get(tickers, start=start)
+    # calc sma
+    sma = data.rolling(sma_per).mean()
+
+    # create strategy
+    s = bt.Strategy(name, [SelectWhere(data > sma),
+                           bt.algos.WeighEqually(),
+                           bt.algos.Rebalance()])
+
+    # now we create the backtest
+    return bt.Backtest(s, data)
+
+
+
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
 treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
