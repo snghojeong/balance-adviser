@@ -107,7 +107,26 @@ def above_sma(tickers, sma_per=50, start='2010-01-01', name='above_sma'):
     # now we create the backtest
     return bt.Backtest(s, data)
 
+# simple backtest to test long-only allocation
+def long_only_ew(tickers, start='2010-01-01', name='long_only_ew'):
+    s = bt.Strategy(name, [bt.algos.RunOnce(),
+                           bt.algos.SelectAll(),
+                           bt.algos.WeighEqually(),
+                           bt.algos.Rebalance()])
+    data = bt.get(tickers, start=start)
+    return bt.Backtest(s, data)
 
+# create the backtests
+tickers = 'aapl,msft,c,gs,ge'
+sma10 = above_sma(tickers, sma_per=10, name='sma10')
+sma20 = above_sma(tickers, sma_per=20, name='sma20')
+sma40 = above_sma(tickers, sma_per=40, name='sma40')
+benchmark = long_only_ew('spy', name='spy')
+
+# run all the backtests!
+res2 = bt.run(sma10, sma20, sma40, benchmark)
+res2.plot(freq='m');
+res2.display()
 
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
