@@ -128,6 +128,33 @@ res2 = bt.run(sma10, sma20, sma40, benchmark)
 res2.plot(freq='m');
 res2.display()
 
+class WeighTarget(bt.Algo):
+    """
+    Sets target weights based on a target weight DataFrame.
+
+    Args:
+        * target_weights (DataFrame): DataFrame containing the target weights
+
+    Sets:
+        * weights
+
+    """
+
+    def __init__(self, target_weights):
+        self.tw = target_weights
+
+    def __call__(self, target):
+        # get target weights on date target.now
+        if target.now in self.tw.index:
+            w = self.tw.loc[target.now]
+
+            # save in temp - this will be used by the weighing algo
+            # also dropping any na's just in case they pop up
+            target.temp['weights'] = w.dropna()
+
+        # return True because we want to keep on moving down the stack
+        return True
+
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
 treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
