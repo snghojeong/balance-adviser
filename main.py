@@ -155,6 +155,22 @@ class WeighTarget(bt.Algo):
         # return True because we want to keep on moving down the stack
         return True
 
+## download some data & calc SMAs
+data = bt.get('spy', start='2010-01-01')
+sma50 = data.rolling(50).mean()
+sma200 = data.rolling(200).mean()
+
+## now we need to calculate our target weight DataFrame
+# first we will copy the sma200 DataFrame since our weights will have the same strucutre
+tw = sma200.copy()
+# set appropriate target weights
+tw[sma50 > sma200] = 1.0
+tw[sma50 <= sma200] = -1.0
+# here we will set the weight to 0 - this is because the sma200 needs 200 data points before
+# calculating its first point. Therefore, it will start with a bunch of nulls (NaNs).
+tw[sma200.isnull()] = 0.0
+
+
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
 treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
