@@ -170,6 +170,12 @@ tw[sma50 <= sma200] = -1.0
 # calculating its first point. Therefore, it will start with a bunch of nulls (NaNs).
 tw[sma200.isnull()] = 0.0
 
+# plot the target weights + chart of price & SMAs
+tmp = bt.merge(tw, data, sma50, sma200)
+tmp.columns = ['tw', 'price', 'sma50', 'sma200']
+ax = tmp.plot(figsize=(15,5), secondary_y=['tw'])
+
+
 
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
