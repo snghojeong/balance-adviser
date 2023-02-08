@@ -175,6 +175,49 @@ tmp = bt.merge(tw, data, sma50, sma200)
 tmp.columns = ['tw', 'price', 'sma50', 'sma200']
 ax = tmp.plot(figsize=(15,5), secondary_y=['tw'])
 
+# first let's create a helper function to create a ma cross backtest
+def ma_cross(ticker, start='2010-01-01',
+             short_ma=50, long_ma=200, name='ma_cross'):
+    # these are all the same steps as above
+    data = bt.get(ticker, start=start)
+    short_sma = data.rolling(short_ma).mean()
+    long_sma  = data.rolling(long_ma).mean()
+
+    # target weights
+    tw = long_sma.copy()
+    tw[short_sma > long_sma] = 1.0
+    tw[short_sma <= long_sma] = -1.0
+    tw[long_sma.isnull()] = 0.0
+
+    # here we specify the children (3rd) arguemnt to make sure the strategy
+    # has the proper universe. This is necessary in strategies of strategies
+    s = bt.Strategy(name, [WeighTarget(tw), bt.algos.Rebalance()], [ticker])
+
+    return bt.Backtest(s, data)
+
+# ok now let's create a few backtests and gather the results.
+# these will later become our "synthetic securities"
+t1 = ma_cross('aapl', name='aapl_ma_cross')
+t2 = ma_cross('msft', name='msft_ma_cross')
+
+# let's run these strategies now
+res = bt.run(t1, t2)
+
+# now that we have run the strategies, let's extract
+# the data to create "synthetic securities"
+data = bt.merge(res['aapl_ma_cross'].prices, res['msft_ma_cross'].prices)
+
+# now we have our new data. This data is basically the equity
+# curves of both backtested strategies. Now we can just use this
+# to test any old strategy, just like before.
+s = bt.Strategy('s', [bt.algos.SelectAll(),
+                      bt.algos.WeighInvVol(),
+                      bt.algos.Rebalance()])
+
+# create and run
+t = bt.Backtest(s, data)
+res = bt.run(t)
+
 
 
 # start day of TLT: 2003-01-02
