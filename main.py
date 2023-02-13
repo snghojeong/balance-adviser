@@ -218,6 +218,8 @@ s = bt.Strategy('s', [bt.algos.SelectAll(),
 t = bt.Backtest(s, data)
 res = bt.run(t)
 
+res.plot();
+
 
 
 # start day of TLT: 2003-01-02
