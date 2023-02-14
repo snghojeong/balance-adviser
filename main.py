@@ -220,6 +220,27 @@ res = bt.run(t)
 
 res.plot();
 
+# once again, we will create a few backtests
+# these will be the child strategies
+t1 = ma_cross('aapl', name='aapl_ma_cross')
+t2 = ma_cross('msft', name='msft_ma_cross')
+
+# let's extract the data object
+data = bt.merge(t1.data, t2.data)
+
+# now we create the parent strategy
+# we specify the children to be the two
+# strategies created above
+s = bt.Strategy('s', [bt.algos.SelectAll(),
+                      bt.algos.WeighInvVol(),
+                      bt.algos.Rebalance()],
+                [t1.strategy, t2.strategy])
+
+# create and run
+t = bt.Backtest(s, data)
+res = bt.run(t)
+
+res.plot();
 
 
 # start day of TLT: 2003-01-02
