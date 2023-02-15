@@ -241,6 +241,7 @@ t = bt.Backtest(s, data)
 res = bt.run(t)
 
 res.plot();
+res.plot_weights();
 
 
 # start day of TLT: 2003-01-02
