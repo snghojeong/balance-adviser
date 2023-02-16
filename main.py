@@ -244,6 +244,24 @@ res.plot();
 res.plot_weights();
 
 
+names = ['foo','bar','rf']
+dates = pd.date_range(start='2017-01-01',end='2017-12-31', freq=pd.tseries.offsets.BDay())
+n = len(dates)
+rdf = pd.DataFrame(
+    np.zeros((n, len(names))),
+    index = dates,
+    columns = names
+)
+
+np.random.seed(1)
+rdf['foo'] = np.random.normal(loc = 0.1/n,scale=0.2/np.sqrt(n),size=n)
+rdf['bar'] = np.random.normal(loc = 0.04/n,scale=0.05/np.sqrt(n),size=n)
+rdf['rf'] = 0.
+
+pdf = 100*np.cumprod(1+rdf)
+pdf.plot();
+
+
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
 treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
