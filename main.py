@@ -261,6 +261,55 @@ rdf['rf'] = 0.
 pdf = 100*np.cumprod(1+rdf)
 pdf.plot();
 
+# algo to fire on the beginning of every month and to run on the first date
+runMonthlyAlgo = bt.algos.RunMonthly(
+    run_on_first_date=True
+)
+
+# algo to set the weights
+#  it will only run when runMonthlyAlgo returns true
+#  which only happens on the first of every month
+weights = pd.Series([0.6,0.4,0.],index = rdf.columns)
+weighSpecifiedAlgo = bt.algos.WeighSpecified(**weights)
+
+# algo to rebalance the current weights to weights set by weighSpecified
+#  will only run when weighSpecifiedAlgo returns true
+#  which happens every time it runs
+rebalAlgo = bt.algos.Rebalance()
+
+# a strategy that rebalances monthly to specified weights
+strat = bt.Strategy('static',
+    [
+        runMonthlyAlgo,
+        weighSpecifiedAlgo,
+        rebalAlgo
+    ]
+)
+
+# set integer_positions=False when positions are not required to be integers(round numbers)
+backtest = bt.Backtest(
+    strat,
+    pdf,
+    integer_positions=False
+)
+
+res = bt.run(backtest)
+res.stats
+res.prices.head()
+res.plot_security_weights()
+
+performanceStats = res['static']
+#performance stats is an ffn object
+res.backtest_list[0].strategy.values.plot();
+
+res.backtest_list[0].strategy.outlays.plot();
+
+security_names = res.backtest_list[0].strategy.outlays.columns
+
+
+res.backtest_list[0].strategy.outlays/pdf.loc[:,security_names]
+res.backtest_list[0].positions.diff(1)
+res.backtest_list[0].positions
 
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
