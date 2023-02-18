@@ -240,8 +240,8 @@ s = bt.Strategy('s', [bt.algos.SelectAll(),
 t = bt.Backtest(s, data)
 res = bt.run(t)
 
-res.plot();
-res.plot_weights();
+res.plot()
+res.plot_weights()
 
 
 names = ['foo','bar','rf']
@@ -259,7 +259,7 @@ rdf['bar'] = np.random.normal(loc = 0.04/n,scale=0.05/np.sqrt(n),size=n)
 rdf['rf'] = 0.
 
 pdf = 100*np.cumprod(1+rdf)
-pdf.plot();
+pdf.plot()
 
 # algo to fire on the beginning of every month and to run on the first date
 runMonthlyAlgo = bt.algos.RunMonthly(
@@ -310,6 +310,8 @@ security_names = res.backtest_list[0].strategy.outlays.columns
 res.backtest_list[0].strategy.outlays/pdf.loc[:,security_names]
 res.backtest_list[0].positions.diff(1)
 res.backtest_list[0].positions
+
+
 
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
