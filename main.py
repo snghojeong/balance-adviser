@@ -311,6 +311,36 @@ res.backtest_list[0].strategy.outlays/pdf.loc[:,security_names]
 res.backtest_list[0].positions.diff(1)
 res.backtest_list[0].positions
 
+rf = 0.04
+np.random.seed(1)
+mus = np.random.normal(loc=0.05,scale=0.02,size=5) + rf
+sigmas = (mus - rf)/0.3 + np.random.normal(loc=0.,scale=0.01,size=5)
+
+num_years = 10
+num_months_per_year = 12
+num_days_per_month = 21
+num_days_per_year = num_months_per_year*num_days_per_month
+
+rdf = pd.DataFrame(
+    index = pd.date_range(
+        start="2008-01-02",
+        periods=num_years*num_months_per_year*num_days_per_month,
+        freq="B"
+    ),
+    columns=['foo','bar','baz','fake1','fake2']
+)
+
+for i,mu in enumerate(mus):
+    sigma = sigmas[i]
+    rdf.iloc[:,i] = np.random.normal(
+        loc=mu/num_days_per_year,
+        scale=sigma/np.sqrt(num_days_per_year),
+        size=rdf.shape[0]
+    )
+pdf = np.cumprod(1+rdf)*100
+
+pdf.plot();
+
 
 
 # start day of TLT: 2003-01-02
