@@ -341,6 +341,10 @@ pdf = np.cumprod(1+rdf)*100
 
 pdf.plot();
 
+sma  = pdf.rolling(window=num_days_per_month*12,center=False).median().shift(1)
+plt.plot(pdf.index,pdf['foo'])
+plt.plot(sma.index,sma['foo'])
+plt.show()
 
 
 # start day of TLT: 2003-01-02
