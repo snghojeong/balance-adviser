@@ -346,6 +346,17 @@ plt.plot(pdf.index,pdf['foo'])
 plt.plot(sma.index,sma['foo'])
 plt.show()
 
+#sma with 1 day lag
+sma.tail()
+#sma with 0 day lag
+pdf.rolling(window=num_days_per_month*12,center=False).median().tail()
+# target weights
+trend = sma.copy()
+trend[pdf > sma] = True
+trend[pdf <= sma] = False
+trend[sma.isnull()] = False
+trend.tail()
+
 
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
