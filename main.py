@@ -357,6 +357,60 @@ trend[pdf <= sma] = False
 trend[sma.isnull()] = False
 trend.tail()
 
+tsmom_invvol_strat = bt.Strategy(
+    'tsmom_invvol',
+    [
+        bt.algos.RunDaily(),
+        bt.algos.SelectWhere(trend),
+        bt.algos.WeighInvVol(),
+        bt.algos.LimitWeights(limit=0.4),
+        bt.algos.Rebalance()
+    ]
+)
+
+tsmom_ew_strat = bt.Strategy(
+    'tsmom_ew',
+    [
+        bt.algos.RunDaily(),
+        bt.algos.SelectWhere(trend),
+        bt.algos.WeighEqually(),
+        bt.algos.LimitWeights(limit=0.4),
+        bt.algos.Rebalance()
+    ]
+)
+
+# create and run
+tsmom_invvol_bt = bt.Backtest(
+    tsmom_invvol_strat,
+    pdf,
+    initial_capital=50000000.0,
+    commissions=lambda q, p: max(100, abs(q) * 0.0021),
+    integer_positions=False,
+    progress_bar=True
+)
+tsmom_invvol_res = bt.run(tsmom_invvol_bt)
+
+tsmom_ew_bt = bt.Backtest(
+    tsmom_ew_strat,
+    pdf,
+
+    initial_capital=50000000.0,
+    commissions=lambda q, p: max(100, abs(q) * 0.0021),
+    integer_positions=False,
+    progress_bar=True
+)
+tsmom_ew_res = bt.run(tsmom_ew_bt)
+
+ax = plt.subplot()
+ax.plot(tsmom_ew_res.prices.index,tsmom_ew_res.prices,label='EW')
+pdf.plot(ax=ax)
+
+ax.legend()
+plt.legend()
+plt.show()
+
+tsmom_ew_res.stats
+
 
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
