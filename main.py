@@ -411,6 +411,16 @@ plt.show()
 
 tsmom_ew_res.stats
 
+np.random.seed(0)
+returns =  np.random.normal(0.08/12,0.2/np.sqrt(12),12*10)
+pdf = pd.DataFrame(
+    np.cumprod(1+returns),
+    index = pd.date_range(start="2008-01-01",periods=12*10,freq="m"),
+    columns=['foo']
+)
+
+pdf.plot();
+
 
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
