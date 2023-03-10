@@ -421,6 +421,84 @@ pdf = pd.DataFrame(
 
 pdf.plot();
 
+runMonthlyAlgo = bt.algos.RunMonthly()
+rebalAlgo = bt.algos.Rebalance()
+
+class Signal(bt.Algo):
+
+    """
+
+    Mostly copied from StatTotalReturn
+
+    Sets temp['Signal'] with total returns over a given period.
+
+    Sets the 'Signal' based on the total return of each
+    over a given lookback period.
+
+    Args:
+        * lookback (DateOffset): lookback period.
+        * lag (DateOffset): Lag interval. Total return is calculated in
+            the inteval [now - lookback - lag, now - lag]
+
+    Sets:
+        * stat
+
+    Requires:
+        * selected
+
+    """
+
+    def __init__(self, lookback=pd.DateOffset(months=3),
+                 lag=pd.DateOffset(days=0)):
+        super(Signal, self).__init__()
+        self.lookback = lookback
+        self.lag = lag
+
+    def __call__(self, target):
+        selected = 'foo'
+        t0 = target.now - self.lag
+
+        if target.universe[selected].index[0] > t0:
+            return False
+        prc = target.universe[selected].loc[t0 - self.lookback:t0]
+
+
+        trend = prc.iloc[-1]/prc.iloc[0] - 1
+        signal = trend > 0.
+
+        if signal:
+            target.temp['Signal'] = 1.
+        else:
+            target.temp['Signal'] = 0.
+
+        return True
+
+signalAlgo = Signal(pd.DateOffset(months=12),pd.DateOffset(months=1))
+
+class WeighFromSignal(bt.Algo):
+
+    """
+    Sets temp['weights'] from the signal.
+    Sets:
+        * weights
+
+    Requires:
+        * selected
+
+    """
+
+    def __init__(self):
+        super(WeighFromSignal, self).__init__()
+
+    def __call__(self, target):
+        selected = 'foo'
+        if target.temp['Signal'] is None:
+            raise(Exception('No Signal!'))
+
+        target.temp['weights'] = {selected : target.temp['Signal']}
+        return True
+
+weighFromSignalAlgo = WeighFromSignal()
 
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
