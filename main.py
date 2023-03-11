@@ -500,6 +500,19 @@ class WeighFromSignal(bt.Algo):
 
 weighFromSignalAlgo = WeighFromSignal()
 
+s = bt.Strategy(
+    'example1',
+    [
+        runMonthlyAlgo,
+        signalAlgo,
+        weighFromSignalAlgo,
+        rebalAlgo
+    ]
+)
+
+t = bt.Backtest(s, pdf, integer_positions=False, progress_bar=True)
+res = bt.run(t)
+
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
 treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
