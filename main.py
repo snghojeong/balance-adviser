@@ -586,6 +586,27 @@ for i,s in enumerate(strategy_names):
     )
     tests.append(t)
 
+combined_strategy = bt.Strategy(
+    'Combined',
+    algos = [
+        runMonthlyAlgo,
+        selectAllAlgo,
+        bt.algos.WeighEqually(),
+        rebalanceAlgo
+    ],
+    children = [x.strategy for x in tests]
+)
+
+combined_test = bt.Backtest(
+    combined_strategy,
+    pdf,
+    integer_positions = False,
+    progress_bar = False
+)
+
+res = bt.run(combined_test)
+
+
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
 treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
