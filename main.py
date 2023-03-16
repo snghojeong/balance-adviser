@@ -607,6 +607,54 @@ combined_test = bt.Backtest(
 res = bt.run(combined_test)
 
 
+strategy_names = np.array(
+    [
+        'Equal Weight',
+        'Inv Vol'
+    ]
+)
+
+runMonthlyAlgo = bt.algos.RunMonthly(
+    run_on_first_date=True,
+    run_on_end_of_period=True
+)
+selectAllAlgo = bt.algos.SelectAll()
+rebalanceAlgo = bt.algos.Rebalance()
+
+strats = []
+tests = []
+results = []
+
+for i,s in enumerate(strategy_names):
+    if s == "Equal Weight":
+        wAlgo = bt.algos.WeighEqually()
+    elif s == "Inv Vol":
+        wAlgo = bt.algos.WeighInvVol()
+
+    strat = bt.Strategy(
+        s,
+        [
+            runMonthlyAlgo,
+            selectAllAlgo,
+            wAlgo,
+            rebalanceAlgo
+        ]
+    )
+    strats.append(strat)
+
+    t = bt.Backtest(
+        strat,
+        pdf,
+        integer_positions = False,
+        progress_bar=False
+    )
+    tests.append(t)
+
+    res = bt.run(t)
+    results.append(res)
+
+
+
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
 treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
