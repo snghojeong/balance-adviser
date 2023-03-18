@@ -653,7 +653,26 @@ for i,s in enumerate(strategy_names):
     res = bt.run(t)
     results.append(res)
 
+merged_prices_df = bt.merge(results[0].prices,results[1].prices)
 
+combined_strategy = bt.Strategy(
+    'Combined',
+    algos = [
+        runMonthlyAlgo,
+        selectAllAlgo,
+        bt.algos.WeighEqually(),
+        rebalanceAlgo
+    ]
+)
+
+combined_test = bt.Backtest(
+    combined_strategy,
+    merged_prices_df,
+    integer_positions = False,
+    progress_bar = False
+)
+
+res = bt.run(combined_test)
 
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
