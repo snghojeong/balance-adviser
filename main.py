@@ -674,6 +674,21 @@ combined_test = bt.Backtest(
 
 res = bt.run(combined_test)
 
+mean = np.array([0.05/252 + 0.02/252, 0.03/252 + 0.02/252])
+volatility = np.array([0.2/np.sqrt(252), 0.05/np.sqrt(252)])
+variance = np.power(volatility,2)
+correlation = np.array(
+    [
+        [1, 0.25],
+        [0.25,1]
+    ]
+)
+covariance = np.zeros((2,2))
+for i in range(len(variance)):
+    for j in range(len(variance)):
+        covariance[i,j] = correlation[i,j]*volatility[i]*volatility[j]
+
+
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
 treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
