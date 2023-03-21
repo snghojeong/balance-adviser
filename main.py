@@ -688,6 +688,21 @@ for i in range(len(variance)):
     for j in range(len(variance)):
         covariance[i,j] = correlation[i,j]*volatility[i]*volatility[j]
 
+names = ['foo','bar','rf']
+dates = pd.date_range(start='2015-01-01',end='2018-12-31', freq=pd.tseries.offsets.BDay())
+n = len(dates)
+rdf = pd.DataFrame(
+    np.zeros((n, len(names))),
+    index = dates,
+    columns = names
+)
+
+np.random.seed(1)
+rdf.loc[:,['foo','bar']] = np.random.multivariate_normal(mean,covariance,size=n)
+rdf['rf'] = 0.02/252
+
+pdf = 100*np.cumprod(1+rdf)
+pdf.plot();
 
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
