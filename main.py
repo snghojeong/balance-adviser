@@ -704,6 +704,43 @@ rdf['rf'] = 0.02/252
 pdf = 100*np.cumprod(1+rdf)
 pdf.plot();
 
+runAfterDaysAlgo = bt.algos.RunAfterDays(
+    20*6 + 1
+)
+
+selectTheseAlgo = bt.algos.SelectThese(['foo','bar'])
+
+# algo to set the weights so each asset contributes the same amount of risk
+#  with data over the last 6 months excluding yesterday
+weighERCAlgo = bt.algos.WeighERC(
+    lookback=pd.DateOffset(days=20*6),
+    covar_method='standard',
+    risk_parity_method='slsqp',
+    maximum_iterations=1000,
+    tolerance=1e-9,
+    lag=pd.DateOffset(days=1)
+)
+
+rebalAlgo = bt.algos.Rebalance()
+
+strat = bt.Strategy(
+    'ERC',
+    [
+        runAfterDaysAlgo,
+        selectTheseAlgo,
+        weighERCAlgo,
+        rebalAlgo
+    ]
+)
+
+backtest = bt.Backtest(
+    strat,
+    pdf,
+    integer_positions=False
+)
+
+res_target = bt.run(backtest)
+
 # start day of TLT: 2003-01-02
 snp = data.DataReader('^GSPC', 'yahoo', start='2003-01-02')
 treas = data.DataReader('TLT', 'yahoo', start='2003-01-02')
