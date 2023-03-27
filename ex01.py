@@ -39,3 +39,44 @@ test2 = bt.Backtest(s2, data)
 res2 = bt.run(test, test2)
 
 res2.plot();
+
+runAfterDaysAlgo = bt.algos.RunAfterDays(
+    20*6 + 1
+)
+
+selectTheseAlgo = bt.algos.SelectThese(['foo','bar'])
+
+# algo to set the weights so each asset contributes the same amount of risk
+#  with data over the last 6 months excluding yesterday
+weighERCAlgo = bt.algos.WeighERC(
+    lookback=pd.DateOffset(days=20*6),
+    covar_method='standard',
+    risk_parity_method='slsqp',
+    maximum_iterations=1000,
+    tolerance=1e-9,
+    lag=pd.DateOffset(days=1)
+)
+
+rebalAlgo = bt.algos.Rebalance()
+
+strat = bt.Strategy(
+    'ERC',
+    [
+        runAfterDaysAlgo,
+        selectTheseAlgo,
+        weighERCAlgo,
+        rebalAlgo
+    ]
+)
+
+backtest = bt.Backtest(
+    strat,
+    pdf,
+    integer_positions=False
+)
+
+res_target = bt.run(backtest)
+
+res_target.get_security_weights().plot();
+
+res_target.prices.plot();
