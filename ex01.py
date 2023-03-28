@@ -80,3 +80,22 @@ res_target = bt.run(backtest)
 res_target.get_security_weights().plot();
 
 res_target.prices.plot();
+
+weights_target = res_target.get_security_weights().copy()
+rolling_cov_target = pdf.loc[:,weights_target.columns].pct_change().rolling(window=252).cov()*252
+
+
+trc_target = pd.DataFrame(
+    np.nan,
+    index = weights_target.index,
+    columns = weights_target.columns
+)
+
+for dt in pdf.index:
+    trc_target.loc[dt,:] = weights_target.loc[dt,:].values*(rolling_cov_target.loc[dt,:].values@weights_target.loc[dt,:].values)/np.sqrt(weights_target.loc[dt,:].values@rolling_cov_target.loc[dt,:].values@weights_target.loc[dt,:].values)
+
+
+fig, ax = plt.subplots(nrows=1,ncols=1)
+trc_target.plot(ax=ax)
+ax.set_title('Total Risk Contribution')
+ax.plot();
