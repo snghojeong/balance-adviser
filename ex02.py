@@ -56,3 +56,57 @@ backtest = bt.Backtest(
 res_target = bt.run(backtest)
 
 res_target.get_security_weights().plot();
+
+# algo to fire whenever predicted tracking error is greater than 1%
+wdf = res_target.get_security_weights()
+
+PTE_rebalance_Algo = bt.algos.PTE_Rebalance(
+    0.01,
+    wdf,
+    lookback=pd.DateOffset(months=3),
+    lag=pd.DateOffset(days=1),
+    covar_method='standard',
+    annualization_factor=252
+)
+
+selectTheseAlgo = bt.algos.SelectThese(['foo','bar'])
+
+# algo to set the weights to 1/vol contributions from each asset
+#  with data over the last 12 months excluding yesterday
+weighTargetAlgo = bt.algos.WeighTarget(
+    wdf
+)
+
+rebalAlgo = bt.algos.Rebalance()
+
+# a strategy that rebalances monthly to specified weights
+strat = bt.Strategy(
+    'PTE',
+    [
+        PTE_rebalance_Algo,
+        selectTheseAlgo,
+        weighTargetAlgo,
+        rebalAlgo
+    ]
+)
+
+# set integer_positions=False when positions are not required to be integers(round numbers)
+backtest = bt.Backtest(
+    strat,
+    pdf,
+    integer_positions=False
+)
+
+res_PTE = bt.run(backtest)
+
+fig, ax = plt.subplots(nrows=1,ncols=1)
+res_target.get_security_weights().plot(ax=ax)
+
+realized_weights_df = res_PTE.get_security_weights()
+realized_weights_df['PTE foo'] = realized_weights_df['foo']
+realized_weights_df['PTE bar'] = realized_weights_df['bar']
+realized_weights_df = realized_weights_df.loc[:,['PTE foo', 'PTE bar']]
+realized_weights_df.plot(ax=ax)
+
+ax.set_title('Target Weights vs PTE Weights')
+ax.plot();
