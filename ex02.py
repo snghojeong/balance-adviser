@@ -110,3 +110,29 @@ realized_weights_df.plot(ax=ax)
 
 ax.set_title('Target Weights vs PTE Weights')
 ax.plot();
+
+trans_df = pd.DataFrame(
+    index=res_target.prices.index,
+    columns=['Target','PTE']
+)
+
+transactions = res_target.get_transactions()
+transactions = (transactions['quantity'] * transactions['price']).reset_index()
+
+bar_mask = transactions.loc[:,'Security'] == 'bar'
+foo_mask = transactions.loc[:,'Security'] == 'foo'
+
+trans_df.loc[trans_df.index[4:],'Target'] = np.abs(transactions[bar_mask].iloc[:,2].values) + np.abs(transactions[foo_mask].iloc[:,2].values)
+transactions = res_PTE.get_transactions()
+transactions = (transactions['quantity'] * transactions['price']).reset_index()
+
+bar_mask = transactions.loc[:,'Security'] == 'bar'
+foo_mask = transactions.loc[:,'Security'] == 'foo'
+
+trans_df.loc[transactions[bar_mask].iloc[:,0],'PTE'] =  np.abs(transactions[bar_mask].iloc[:,2].values)
+trans_df.loc[transactions[foo_mask].iloc[:,0],'PTE'] +=  np.abs(transactions[foo_mask].iloc[:,2].values)
+trans_df = trans_df.fillna(0)
+fig, ax = plt.subplots(nrows=1,ncols=1)
+trans_df.cumsum().plot(ax=ax)
+ax.set_title('Cumulative sum of notional traded')
+ax.plot();
