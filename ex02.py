@@ -136,3 +136,33 @@ fig, ax = plt.subplots(nrows=1,ncols=1)
 trans_df.cumsum().plot(ax=ax)
 ax.set_title('Cumulative sum of notional traded')
 ax.plot();
+
+weights_target = res_target.get_security_weights()
+rolling_cov_target = pdf.loc[:,weights_target.columns].pct_change().rolling(window=3*20).cov()*252
+
+weights_PTE = res_PTE.get_security_weights().loc[:,weights_target.columns]
+rolling_cov_PTE = pdf.loc[:,weights_target.columns].pct_change().rolling(window=3*20).cov()*252
+
+
+trc_target = pd.DataFrame(
+    np.nan,
+    index = weights_target.index,
+    columns = weights_target.columns
+)
+
+trc_PTE = pd.DataFrame(
+    np.nan,
+    index = weights_PTE.index,
+    columns = [x + " PTE" for x in weights_PTE.columns]
+)
+
+for dt in pdf.index:
+    trc_target.loc[dt,:] = weights_target.loc[dt,:].values*(rolling_cov_target.loc[dt,:].values@weights_target.loc[dt,:].values)/np.sqrt(weights_target.loc[dt,:].values@rolling_cov_target.loc[dt,:].values@weights_target.loc[dt,:].values)
+    trc_PTE.loc[dt,:] = weights_PTE.loc[dt,:].values*(rolling_cov_PTE.loc[dt,:].values@weights_PTE.loc[dt,:].values)/np.sqrt(weights_PTE.loc[dt,:].values@rolling_cov_PTE.loc[dt,:].values@weights_PTE.loc[dt,:].values)
+
+
+fig, ax = plt.subplots(nrows=1,ncols=1)
+trc_target.plot(ax=ax)
+trc_PTE.plot(ax=ax)
+ax.set_title('Total Risk Contribution')
+ax.plot();
