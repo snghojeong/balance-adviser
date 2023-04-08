@@ -97,3 +97,15 @@ backtest = bt.Backtest(
 )
 
 res_PTE = bt.run(backtest)
+
+fig, ax = plt.subplots(nrows=1,ncols=1)
+res_target.get_security_weights().plot(ax=ax)
+
+realized_weights_df = res_PTE.get_security_weights()
+realized_weights_df['PTE foo'] = realized_weights_df['foo']
+realized_weights_df['PTE bar'] = realized_weights_df['bar']
+realized_weights_df = realized_weights_df.loc[:,['PTE foo', 'PTE bar']]
+realized_weights_df.plot(ax=ax)
+
+ax.set_title('Target Weights vs PTE Weights')
+ax.plot();
