@@ -165,3 +165,10 @@ trc_target.plot(ax=ax)
 trc_PTE.plot(ax=ax)
 ax.set_title('Total Risk Contribution')
 ax.plot();
+
+fig, ax = plt.subplots(nrows=1,ncols=1)
+trc_target.sum(axis=1).plot(ax=ax,label='Target')
+trc_PTE.sum(axis=1).plot(ax=ax,label='PTE')
+ax.legend()
+ax.set_title('Total Risk')
+ax.plot();
