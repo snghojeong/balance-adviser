@@ -172,3 +172,29 @@ trc_PTE.sum(axis=1).plot(ax=ax,label='PTE')
 ax.legend()
 ax.set_title('Total Risk')
 ax.plot();
+
+transactions = res_PTE.get_transactions()
+transactions = (transactions['quantity'] * transactions['price']).reset_index()
+
+bar_mask = transactions.loc[:,'Security'] == 'bar'
+dates_of_PTE_transactions = transactions[bar_mask].iloc[:,0]
+dates_of_PTE_transactions
+
+fig, ax = plt.subplots(nrows=1,ncols=1)
+np.sum(np.abs(trc_target.values - trc_PTE.values))
+    #.abs().sum(axis=1).plot()
+
+ax.set_title('Total Risk')
+ax.plot(
+    trc_target.index,
+    np.sum(np.abs(trc_target.values - trc_PTE.values),axis=1),
+    label='PTE'
+)
+
+for i,dt in enumerate(dates_of_PTE_transactions):
+    if i == 0:
+        ax.axvline(x=dt,color='red',label='PTE Transaction')
+    else:
+        ax.axvline(x=dt,color='red')
+
+ax.legend();
