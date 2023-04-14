@@ -178,7 +178,19 @@ transactions = (transactions['quantity'] * transactions['price']).reset_index()
 
 bar_mask = transactions.loc[:,'Security'] == 'bar'
 dates_of_PTE_transactions = transactions[bar_mask].iloc[:,0]
-dates_of_PTE_transactions
+# dates_of_PTE_transactions
+# 0    2015-01-06
+# 2    2015-01-07
+# 4    2015-01-08
+# 6    2015-01-09
+# 8    2015-01-12
+# 10   2015-02-20
+# 12   2015-04-07
+# 14   2015-09-01
+# 16   2017-03-23
+# 18   2017-06-23
+# 20   2017-10-24
+# Name: Date, dtype: datetime64[ns]
 
 fig, ax = plt.subplots(nrows=1,ncols=1)
 np.sum(np.abs(trc_target.values - trc_PTE.values))
