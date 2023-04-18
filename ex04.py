@@ -71,3 +71,52 @@ govt_price = censor(govt_price, govt_data)
 govt_pvbp = pvbp( govt_yield, govt_ttm, govt_coupon)
 govt_pvbp[ govt_ttm <= 0 ] = 0.
 govt_pvbp = censor(govt_pvbp, govt_data)
+
+# Corporate Bonds: Create synthetic data for a universe of corporate bonds
+
+# Reference Data
+n_corp = 50    # Number of corporate bonds to generate
+avg_ttm = 10   # Average time to maturity, in years
+coupon_mean = 5
+coupon_std = 1.5
+mat_dates = start_date + np.random.exponential(avg_ttm*365, n_corp).astype(int) * pd.offsets.Day()
+issue_dates = np.minimum( mat_dates, end_date ) - np.random.exponential(avg_ttm*365, n_corp).astype(int) * pd.offsets.Day()
+names = pd.Series( [ 'corp{:04d}'.format(i) for i in range(n_corp)])
+coupons = np.random.normal( coupon_mean, coupon_std, n_corp ).round(3)
+corp_data = pd.DataFrame( {'mat_date':mat_dates, 'issue_date': issue_dates, 'coupon':coupons}, index=names)
+
+# Market Data and Risk
+# Model: corporate yield = government yield + credit spread
+# Model: credit spread changes = beta * common factor changes + idiosyncratic changes
+corp_spread_initial = np.random.normal( 2, 1, len(corp_data) )
+corp_betas_raw = np.random.normal( 1, 0.5, len(corp_data) )
+corp_factor_vol = 0.5
+corp_idio_vol = 0.5
+corp_factor_ts = np.cumsum( np.random.normal( 0, corp_factor_vol/np.sqrt(252), len(timeline))).reshape(-1,1)
+corp_idio_ts = np.cumsum( np.random.normal( 0, corp_idio_vol/np.sqrt(252), len(timeline))).reshape(-1,1)
+corp_spread = corp_spread_initial + np.multiply( corp_factor_ts, corp_betas_raw ) + corp_idio_ts
+corp_yield = govt_yield_ts + corp_spread
+corp_yield = pd.DataFrame(  columns = corp_data.index, index=timeline, data = corp_yield )
+
+corp_mat = pd.DataFrame( columns = corp_data.index, index=timeline, data=start_date )
+corp_mat.loc[:,:] = corp_data['mat_date'].values.T
+corp_ttm = (corp_mat - timeline.values.reshape(-1,1))/pd.Timedelta('1Y')
+corp_coupon = pd.DataFrame( columns = corp_data.index, index=timeline )
+corp_coupon.loc[:,:] = corp_data['coupon'].values.T
+corp_accrued = corp_coupon.multiply( timeline.to_series().diff()/pd.Timedelta('1Y'), axis=0 )
+corp_accrued.iloc[0] = 0
+
+corp_price = yield_to_price( corp_yield, corp_ttm, corp_coupon )
+corp_price[ corp_ttm <= 0 ] = 100.
+corp_price = censor(corp_price, corp_data)
+
+corp_pvbp = pvbp( corp_yield, corp_ttm, corp_coupon)
+corp_pvbp[ corp_ttm <= 0 ] = 0.
+corp_pvbp = censor(corp_pvbp, corp_data)
+
+bidoffer_bps = 5.
+corp_bidoffer = -bidoffer_bps * corp_pvbp
+
+corp_betas = pd.DataFrame( columns = corp_data.index, index=timeline )
+corp_betas.loc[:,:] = corp_betas_raw
+corp_betas = censor(corp_betas, corp_data)
