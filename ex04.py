@@ -120,3 +120,87 @@ corp_bidoffer = -bidoffer_bps * corp_pvbp
 corp_betas = pd.DataFrame( columns = corp_data.index, index=timeline )
 corp_betas.loc[:,:] = corp_betas_raw
 corp_betas = censor(corp_betas, corp_data)
+
+# Set up a strategy and a backtest
+
+# The goal here is to define an equal weighted portfolio of corporate bonds,
+# and to hedge the rates risk with the rolling series of government bonds
+
+# Define Algo Stacks as the various building blocks
+# Note that the order in which we execute these is extremely important
+
+lifecycle_stack = bt.core.AlgoStack(
+    # Close any matured bond positions (including hedges)
+    bt.algos.ClosePositionsAfterDates( 'maturity' ),
+    # Roll government bond positions into the On The Run
+    bt.algos.RollPositionsAfterDates( 'govt_roll_map' ),
+)
+risk_stack = bt.AlgoStack(
+    # Specify how frequently to calculate risk
+    bt.algos.Or( [bt.algos.RunWeekly(),
+                  bt.algos.RunMonthly()] ),
+    # Update the risk given any positions that have been put on so far in the current step
+    bt.algos.UpdateRisk( 'pvbp', history=1),
+    bt.algos.UpdateRisk( 'beta', history=1),
+)
+hedging_stack = bt.AlgoStack(
+    # Specify how frequently to hedge risk
+    bt.algos.RunMonthly(),
+    # Select the "alias" for the on-the-run government bond...
+    bt.algos.SelectThese( [series_name], include_no_data = True ),
+    # ... and then resolve it to the underlying security for the given date
+    bt.algos.ResolveOnTheRun( 'govt_otr' ),
+    # Hedge out the pvbp risk using the selected government bond
+    bt.algos.HedgeRisks( ['pvbp']),
+    # Need to update risk again after hedging so that it gets recorded correctly (post-hedges)
+    bt.algos.UpdateRisk( 'pvbp', history=True),
+)
+debug_stack = bt.core.AlgoStack(
+    # Specify how frequently to display debug info
+    bt.algos.RunMonthly(),
+    bt.algos.PrintInfo('Strategy {name} : {now}.\tNotional:  {_notl_value:0.0f},\t Value: {_value:0.0f},\t Price: {_price:0.4f}'),
+    bt.algos.PrintRisk('Risk: \tPVBP: {pvbp:0.0f},\t Beta: {beta:0.0f}'),
+)
+trading_stack =bt.core.AlgoStack(
+         # Specify how frequently to rebalance the portfolio
+         bt.algos.RunMonthly(),
+         # Select instruments for rebalancing. Start with everything
+         bt.algos.SelectAll(),
+         # Prevent matured/rolled instruments from coming back into the mix
+         bt.algos.SelectActive(),
+         # Select only corp instruments
+         bt.algos.SelectRegex( 'corp' ),
+         # Specify how to weigh the securities
+         bt.algos.WeighEqually(),
+         # Set the target portfolio size
+         bt.algos.SetNotional( 'notional_value' ),
+         # Rebalance the portfolio
+         bt.algos.Rebalance()
+)
+
+govt_securities = [ bt.CouponPayingHedgeSecurity( name ) for name in govt_data.index]
+corp_securities = [ bt.CouponPayingSecurity( name ) for name in corp_data.index ]
+securities = govt_securities + corp_securities
+base_strategy = bt.FixedIncomeStrategy('BaseStrategy', [ lifecycle_stack, bt.algos.Or( [trading_stack, risk_stack, debug_stack ] ) ], children = securities)
+hedged_strategy = bt.FixedIncomeStrategy('HedgedStrategy', [ lifecycle_stack, bt.algos.Or( [trading_stack, risk_stack, hedging_stack, debug_stack ] ) ], children = securities)
+
+#Collect all the data for the strategies
+
+# Here we use clean prices as the data and accrued as the coupon. Could alternatively use dirty prices and cashflows.
+data = pd.concat( [ govt_price, corp_price ], axis=1) / 100.  # Because we need prices per unit notional
+additional_data = { 'coupons' : pd.concat([govt_accrued, corp_accrued], axis=1) / 100.,
+                   'bidoffer' : corp_bidoffer/100.,
+                   'notional_value' : pd.Series( data=1e6, index=data.index ),
+                   'maturity' : pd.concat([govt_data, corp_data], axis=0).rename(columns={"mat_date": "date"}),
+                   'govt_roll_map' : govt_roll_map,
+                   'govt_otr' : govt_otr,
+                   'unit_risk' : {'pvbp' : pd.concat( [ govt_pvbp, corp_pvbp] ,axis=1)/100.,
+                                  'beta' : corp_betas * corp_pvbp / 100.},
+                  }
+base_test = bt.Backtest( base_strategy, data, 'BaseBacktest',
+                initial_capital = 0,
+                additional_data = additional_data )
+hedge_test = bt.Backtest( hedged_strategy, data, 'HedgedBacktest',
+                initial_capital = 0,
+                additional_data = additional_data)
+out = bt.run( base_test, hedge_test )
