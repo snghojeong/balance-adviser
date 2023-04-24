@@ -204,3 +204,10 @@ hedge_test = bt.Backtest( hedged_strategy, data, 'HedgedBacktest',
                 initial_capital = 0,
                 additional_data = additional_data)
 out = bt.run( base_test, hedge_test )
+
+# Total PNL time series values
+pd.DataFrame( {'base':base_test.strategy.values,
+               'hedged':hedge_test.strategy.values,
+               'top':base_test.strategy['TopStrategy'].values,
+               'bottom':base_test.strategy['BottomStrategy'].values}
+            ).plot();
