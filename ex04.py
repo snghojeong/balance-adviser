@@ -218,3 +218,10 @@ pd.DataFrame( {'base':base_test.strategy.risks['pvbp'],
                'top':base_test.strategy['TopStrategy'].risks['pvbp'],
                'bottom':base_test.strategy['BottomStrategy'].risks['pvbp']}
             ).dropna().plot();
+
+# Total beta time series values
+pd.DataFrame( {'base':base_test.strategy.risks['beta'],
+               'hedged':hedge_test.strategy.risks['beta'],
+               'top':base_test.strategy['TopStrategy'].risks['beta'],
+               'bottom':base_test.strategy['BottomStrategy'].risks['beta']}
+            ).dropna().plot();
