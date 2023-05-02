@@ -225,3 +225,10 @@ pd.DataFrame( {'base':base_test.strategy.risks['beta'],
                'top':base_test.strategy['TopStrategy'].risks['beta'],
                'bottom':base_test.strategy['BottomStrategy'].risks['beta']}
             ).dropna().plot();
+
+# "Price" time series values
+pd.DataFrame( {'base':base_test.strategy.prices,
+               'hedged':hedge_test.strategy.prices,
+               'top':base_test.strategy['TopStrategy'].prices,
+               'bottom':base_test.strategy['BottomStrategy'].prices}
+            ).plot();
