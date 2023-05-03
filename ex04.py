@@ -232,3 +232,6 @@ pd.DataFrame( {'base':base_test.strategy.prices,
                'top':base_test.strategy['TopStrategy'].prices,
                'bottom':base_test.strategy['BottomStrategy'].prices}
             ).plot();
+
+# Show transactions
+out.get_transactions('HedgedBacktest').head(20)
